@@ -463,7 +463,7 @@ const Dashboard = () => {
           <div className="relative rounded-lg overflow-hidden border border-gray-200">
             <GoogleMap
               mapContainerStyle={mapContainerStyle}
-              zoom={15}
+              zoom={12}
               center={center}
               mapTypeId={mapType}
               options={{
