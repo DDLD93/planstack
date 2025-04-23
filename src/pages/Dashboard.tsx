@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useRef } from "react";
 import {
   BarChart,
   Bar,
@@ -333,7 +333,7 @@ const Dashboard = () => {
 
   const [selectedLocation, setSelectedLocation] = useState<PropertyMetric | null>(null);
   const [showStreetView, setShowStreetView] = useState(false);
-  const [mapType, setMapType] = useState<google.maps.MapTypeId>(google.maps.MapTypeId.ROADMAP);
+  const [mapType, setMapType] = useState("roadmap"); // Use string instead of google.maps.MapTypeId
 
   // Get marker color based on property type
   const getMarkerColor = (propertyType: string) => {
@@ -347,8 +347,10 @@ const Dashboard = () => {
     }
   };
 
-  // Get marker icon based on tax status
-  const getMarkerIcon = (property: PropertyMetric) => {
+  // Get marker icon based on tax status - only called when map is loaded
+  const getMarkerIcon = useCallback((property: PropertyMetric) => {
+    if (!isLoaded) return undefined; // Return undefined instead of null
+    
     const color = getMarkerColor(property.propertyType);
     return {
       path: google.maps.SymbolPath.CIRCLE,
@@ -358,7 +360,7 @@ const Dashboard = () => {
       strokeColor: "#FFFFFF",
       scale: 10 + (property.propertySize / 1000), // Size based on property size
     };
-  };
+  }, [isLoaded]);
 
   // Get status color
   const getStatusColor = (status: string) => {
@@ -387,8 +389,8 @@ const Dashboard = () => {
     setShowStreetView(!showStreetView);
   }, [showStreetView]);
 
-  // Change map type
-  const changeMapType = useCallback((type: google.maps.MapTypeId) => {
+  // Change map type - using string values
+  const changeMapType = useCallback((type: string) => {
     setMapType(type);
   }, []);
 
@@ -428,26 +430,26 @@ const Dashboard = () => {
         </h2>
         <div className="mb-4 flex flex-wrap gap-2">
           <button 
-            onClick={() => changeMapType(google.maps.MapTypeId.ROADMAP)}
-            className={`px-3 py-1 rounded-md text-sm flex items-center gap-1 ${mapType === google.maps.MapTypeId.ROADMAP ? 'bg-blue-500 text-white' : 'bg-gray-100'}`}
+            onClick={() => changeMapType("roadmap")}
+            className={`px-3 py-1 rounded-md text-sm flex items-center gap-1 ${mapType === "roadmap" ? 'bg-blue-500 text-white' : 'bg-gray-100'}`}
           >
             <Map className="w-4 h-4" /> Road
           </button>
           <button 
-            onClick={() => changeMapType(google.maps.MapTypeId.SATELLITE)}
-            className={`px-3 py-1 rounded-md text-sm flex items-center gap-1 ${mapType === google.maps.MapTypeId.SATELLITE ? 'bg-blue-500 text-white' : 'bg-gray-100'}`}
+            onClick={() => changeMapType("satellite")}
+            className={`px-3 py-1 rounded-md text-sm flex items-center gap-1 ${mapType === "satellite" ? 'bg-blue-500 text-white' : 'bg-gray-100'}`}
           >
             <Layers className="w-4 h-4" /> Satellite
           </button>
           <button 
-            onClick={() => changeMapType(google.maps.MapTypeId.HYBRID)}
-            className={`px-3 py-1 rounded-md text-sm flex items-center gap-1 ${mapType === google.maps.MapTypeId.HYBRID ? 'bg-blue-500 text-white' : 'bg-gray-100'}`}
+            onClick={() => changeMapType("hybrid")}
+            className={`px-3 py-1 rounded-md text-sm flex items-center gap-1 ${mapType === "hybrid" ? 'bg-blue-500 text-white' : 'bg-gray-100'}`}
           >
             <Layers className="w-4 h-4" /> Hybrid
           </button>
           <button 
-            onClick={() => changeMapType(google.maps.MapTypeId.TERRAIN)}
-            className={`px-3 py-1 rounded-md text-sm flex items-center gap-1 ${mapType === google.maps.MapTypeId.TERRAIN ? 'bg-blue-500 text-white' : 'bg-gray-100'}`}
+            onClick={() => changeMapType("terrain")}
+            className={`px-3 py-1 rounded-md text-sm flex items-center gap-1 ${mapType === "terrain" ? 'bg-blue-500 text-white' : 'bg-gray-100'}`}
           >
             <Mountain className="w-4 h-4" /> Terrain
           </button>
@@ -502,7 +504,7 @@ const Dashboard = () => {
                         setSelectedLocation(property);
                         setShowStreetView(false);
                       }}
-                      icon={getMarkerIcon(property)}
+                      icon={isLoaded ? getMarkerIcon(property) : undefined}
                       title={property.propertyId}
                     />
                   ))}
