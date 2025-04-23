@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   BarChart,
   Bar,
@@ -14,7 +14,7 @@ import {
   LineChart,
   Line,
 } from "recharts";
-import { GoogleMap, Marker, InfoWindow, useLoadScript, Libraries, HeatmapLayer } from "@react-google-maps/api";
+import { GoogleMap, Marker, InfoWindow, useLoadScript, Libraries } from "@react-google-maps/api";
 import {
   Building,
   Home,
@@ -91,24 +91,24 @@ const dashboardData = {
 };
 
 // Heat map points for property density
-const heatMapPoints = [
-  { lat: 9.9188, lng: 8.8942, weight: 30 }, // Jos North center
-  { lat: 9.8943, lng: 8.8806, weight: 25 }, // Jos South center
-  { lat: 9.5292, lng: 9.0089, weight: 15 }, // Mangu center
-  { lat: 9.5333, lng: 8.9, weight: 12 },    // Barkin Ladi center
-  { lat: 9.3, lng: 9.0, weight: 10 },       // Bokkos center
+const locationPoints = [
+  { lat: 9.9188, lng: 8.8942, weight: 30, name: "Jos North Center", properties: 4250 }, // Jos North center
+  { lat: 9.8943, lng: 8.8806, weight: 25, name: "Jos South Center", properties: 3800 }, // Jos South center
+  { lat: 9.5292, lng: 9.0089, weight: 15, name: "Mangu Center", properties: 2100 }, // Mangu center
+  { lat: 9.5333, lng: 8.9, weight: 12, name: "Barkin Ladi Center", properties: 1850 },    // Barkin Ladi center
+  { lat: 9.3, lng: 9.0, weight: 10, name: "Bokkos Center", properties: 1500 },       // Bokkos center
   
   // Additional density points around Jos North
-  { lat: 9.9288, lng: 8.9042, weight: 28 },
-  { lat: 9.9388, lng: 8.8842, weight: 27 },
-  { lat: 9.9088, lng: 8.8742, weight: 26 },
-  { lat: 9.8988, lng: 8.9142, weight: 22 },
+  { lat: 9.9288, lng: 8.9042, weight: 28, name: "Jos North (East)", properties: 3950 },
+  { lat: 9.9388, lng: 8.8842, weight: 27, name: "Jos North (West)", properties: 3750 },
+  { lat: 9.9088, lng: 8.8742, weight: 26, name: "Jos North (South)", properties: 3600 },
+  { lat: 9.8988, lng: 8.9142, weight: 22, name: "Jos North (Outskirts)", properties: 3200 },
   
   // Additional density points around Jos South
-  { lat: 9.8843, lng: 8.8706, weight: 23 },
-  { lat: 9.8743, lng: 8.8906, weight: 22 },
-  { lat: 9.9043, lng: 8.9006, weight: 21 },
-  { lat: 9.9143, lng: 8.8606, weight: 20 },
+  { lat: 9.8843, lng: 8.8706, weight: 23, name: "Jos South (North)", properties: 3450 },
+  { lat: 9.8743, lng: 8.8906, weight: 22, name: "Jos South (East)", properties: 3250 },
+  { lat: 9.9043, lng: 8.9006, weight: 21, name: "Jos South (West)", properties: 3100 },
+  { lat: 9.9143, lng: 8.8606, weight: 20, name: "Jos South (Outskirts)", properties: 2900 },
 ];
 
 // Recent activity data
@@ -153,6 +153,18 @@ const Dashboard = () => {
     libraries,
   });
 
+  const [selectedLocation, setSelectedLocation] = useState<typeof locationPoints[0] | null>(null);
+
+  // Calculate marker size based on weight
+  const getMarkerSize = (weight: number) => {
+    const minSize = 24;
+    const maxSize = 48;
+    const minWeight = 10; // Minimum weight in data
+    const maxWeight = 30; // Maximum weight in data
+    
+    return minSize + ((weight - minWeight) / (maxWeight - minWeight)) * (maxSize - minSize);
+  };
+
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-6">Lands and Survey Dashboard</h1>
@@ -181,11 +193,11 @@ const Dashboard = () => {
         />
       </div>
 
-      {/* Property Heat Map */}
+      {/* Property Map */}
       <div className="bg-white rounded-lg shadow p-4 mb-8">
         <h2 className="text-lg font-semibold mb-4 flex items-center">
           <MapPin className="w-5 h-5 mr-2 text-red-500" />
-          Property Density Heat Map
+          Property Distribution Map
         </h2>
         {loadError && <div>Error loading maps</div>}
         {!isLoaded ? (
@@ -198,32 +210,34 @@ const Dashboard = () => {
             zoom={10}
             center={center}
           >
-            <HeatmapLayer
-              data={heatMapPoints.map(point => ({
-                location: new google.maps.LatLng(point.lat, point.lng),
-                weight: point.weight,
-              }))}
-              options={{
-                radius: 20,
-                opacity: 0.7,
-                gradient: [
-                  'rgba(0, 255, 255, 0)',
-                  'rgba(0, 255, 255, 1)',
-                  'rgba(0, 191, 255, 1)',
-                  'rgba(0, 127, 255, 1)',
-                  'rgba(0, 63, 255, 1)',
-                  'rgba(0, 0, 255, 1)',
-                  'rgba(0, 0, 223, 1)',
-                  'rgba(0, 0, 191, 1)',
-                  'rgba(0, 0, 159, 1)',
-                  'rgba(0, 0, 127, 1)',
-                  'rgba(63, 0, 91, 1)',
-                  'rgba(127, 0, 63, 1)',
-                  'rgba(191, 0, 31, 1)',
-                  'rgba(255, 0, 0, 1)'
-                ]
-              }}
-            />
+            {locationPoints.map((point, index) => (
+              <Marker
+                key={index}
+                position={{ lat: point.lat, lng: point.lng }}
+                onClick={() => setSelectedLocation(point)}
+                icon={{
+                  path: google.maps.SymbolPath.CIRCLE,
+                  fillColor: '#3B82F6',
+                  fillOpacity: 0.8,
+                  strokeWeight: 1,
+                  strokeColor: '#1E40AF',
+                  scale: getMarkerSize(point.weight) / 10,
+                }}
+              />
+            ))}
+
+            {selectedLocation && (
+              <InfoWindow
+                position={{ lat: selectedLocation.lat, lng: selectedLocation.lng }}
+                onCloseClick={() => setSelectedLocation(null)}
+              >
+                <div className="p-2">
+                  <h3 className="font-semibold text-gray-900">{selectedLocation.name}</h3>
+                  <p className="text-gray-700">Properties: {selectedLocation.properties.toLocaleString()}</p>
+                  <p className="text-gray-700">Density: {selectedLocation.weight}/30</p>
+                </div>
+              </InfoWindow>
+            )}
           </GoogleMap>
         )}
       </div>
