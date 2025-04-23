@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import {
   BarChart,
   Bar,
@@ -14,19 +14,45 @@ import {
   LineChart,
   Line,
 } from "recharts";
-import { GoogleMap, Marker, InfoWindow, useLoadScript, Libraries } from "@react-google-maps/api";
+import { GoogleMap, Marker, InfoWindow, useLoadScript, Libraries, StreetViewPanorama } from "@react-google-maps/api";
 import {
   Building,
   Home,
   DollarSign,
   FileText,
   MapPin,
-  PieChart as PieChartIcon,
+  PieChartIcon,
   BarChart3,
   Activity,
   Users,
   CalendarDays,
+  Navigation,
+  User,
+  Check,
+  XCircle,
+  Layers,
+  Eye,
+  Map,
+  Clock,
+  Shield,
+  Info,
+  Mountain,
 } from "lucide-react";
+
+// Property data interface
+interface PropertyMetric {
+  ownerName: string;
+  propertyId: string;
+  lat: number;
+  lng: number;
+  propertyType: string;
+  propertySize: number;
+  taxStatus: string;
+  region: string;
+  lga: string;
+  ward: string;
+  evaluationPrice: number;
+}
 
 // Mock dashboard overview data
 const dashboardData = {
@@ -90,25 +116,177 @@ const dashboardData = {
   ],
 };
 
-// Heat map points for property density
-const locationPoints = [
-  { lat: 9.9188, lng: 8.8942, weight: 30, name: "Jos North Center", properties: 4250 }, // Jos North center
-  { lat: 9.8943, lng: 8.8806, weight: 25, name: "Jos South Center", properties: 3800 }, // Jos South center
-  { lat: 9.5292, lng: 9.0089, weight: 15, name: "Mangu Center", properties: 2100 }, // Mangu center
-  { lat: 9.5333, lng: 8.9, weight: 12, name: "Barkin Ladi Center", properties: 1850 },    // Barkin Ladi center
-  { lat: 9.3, lng: 9.0, weight: 10, name: "Bokkos Center", properties: 1500 },       // Bokkos center
-  
-  // Additional density points around Jos North
-  { lat: 9.9288, lng: 8.9042, weight: 28, name: "Jos North (East)", properties: 3950 },
-  { lat: 9.9388, lng: 8.8842, weight: 27, name: "Jos North (West)", properties: 3750 },
-  { lat: 9.9088, lng: 8.8742, weight: 26, name: "Jos North (South)", properties: 3600 },
-  { lat: 9.8988, lng: 8.9142, weight: 22, name: "Jos North (Outskirts)", properties: 3200 },
-  
-  // Additional density points around Jos South
-  { lat: 9.8843, lng: 8.8706, weight: 23, name: "Jos South (North)", properties: 3450 },
-  { lat: 9.8743, lng: 8.8906, weight: 22, name: "Jos South (East)", properties: 3250 },
-  { lat: 9.9043, lng: 8.9006, weight: 21, name: "Jos South (West)", properties: 3100 },
-  { lat: 9.9143, lng: 8.8606, weight: 20, name: "Jos South (Outskirts)", properties: 2900 },
+// Comprehensive property location data
+const locationPoints: PropertyMetric[] = [
+  {
+    ownerName: "John Adamu",
+    propertyId: "JN-12345",
+    lat: 9.9188,
+    lng: 8.8942,
+    propertyType: "Residential",
+    propertySize: 850,
+    taxStatus: "Paid",
+    region: "Northern",
+    lga: "Jos North",
+    ward: "Naraguta",
+    evaluationPrice: 25000000,
+  },
+  {
+    ownerName: "Sarah Ibrahim",
+    propertyId: "JS-67890",
+    lat: 9.8943,
+    lng: 8.8806,
+    propertyType: "Commercial",
+    propertySize: 1200,
+    taxStatus: "Paid",
+    region: "Southern",
+    lga: "Jos South",
+    ward: "Bukuru",
+    evaluationPrice: 45000000,
+  },
+  {
+    ownerName: "Michael Okonkwo",
+    propertyId: "MG-23456",
+    lat: 9.5292,
+    lng: 9.0089,
+    propertyType: "Residential",
+    propertySize: 620,
+    taxStatus: "Pending",
+    region: "Central",
+    lga: "Mangu",
+    ward: "Mangu Central",
+    evaluationPrice: 18500000,
+  },
+  {
+    ownerName: "Elizabeth Danladi",
+    propertyId: "BL-34567",
+    lat: 9.5333,
+    lng: 8.9,
+    propertyType: "Agricultural",
+    propertySize: 5000,
+    taxStatus: "Paid",
+    region: "Western",
+    lga: "Barkin Ladi",
+    ward: "Barkin Ladi",
+    evaluationPrice: 32000000,
+  },
+  {
+    ownerName: "Emmanuel Joseph",
+    propertyId: "BK-45678",
+    lat: 9.3,
+    lng: 9.0,
+    propertyType: "Mixed Use",
+    propertySize: 1500,
+    taxStatus: "Overdue",
+    region: "Eastern",
+    lga: "Bokkos",
+    ward: "Bokkos Central",
+    evaluationPrice: 28000000,
+  },
+  {
+    ownerName: "Patricia Lar",
+    propertyId: "JN-56789",
+    lat: 9.9288,
+    lng: 8.9042,
+    propertyType: "Commercial",
+    propertySize: 1800,
+    taxStatus: "Paid",
+    region: "Northern",
+    lga: "Jos North",
+    ward: "Jenta Adamu",
+    evaluationPrice: 52000000,
+  },
+  {
+    ownerName: "David Ahmed",
+    propertyId: "JN-67890",
+    lat: 9.9388,
+    lng: 8.8842,
+    propertyType: "Residential",
+    propertySize: 750,
+    taxStatus: "Pending",
+    region: "Northern",
+    lga: "Jos North",
+    ward: "Jenta Mangoro",
+    evaluationPrice: 21000000,
+  },
+  {
+    ownerName: "Grace Emmanuel",
+    propertyId: "JN-78901",
+    lat: 9.9088,
+    lng: 8.8742,
+    propertyType: "Residential",
+    propertySize: 680,
+    taxStatus: "Paid",
+    region: "Northern",
+    lga: "Jos North",
+    ward: "Apata",
+    evaluationPrice: 19500000,
+  },
+  {
+    ownerName: "Peter Musa",
+    propertyId: "JN-89012",
+    lat: 9.8988,
+    lng: 8.9142,
+    propertyType: "Industrial",
+    propertySize: 3200,
+    taxStatus: "Overdue",
+    region: "Northern",
+    lga: "Jos North",
+    ward: "Laranto",
+    evaluationPrice: 85000000,
+  },
+  {
+    ownerName: "Fatima Bello",
+    propertyId: "JS-90123",
+    lat: 9.8843,
+    lng: 8.8706,
+    propertyType: "Commercial",
+    propertySize: 1400,
+    taxStatus: "Paid",
+    region: "Southern",
+    lga: "Jos South",
+    ward: "Gyel",
+    evaluationPrice: 48000000,
+  },
+  {
+    ownerName: "James Yakubu",
+    propertyId: "JS-01234",
+    lat: 9.8743,
+    lng: 8.8906,
+    propertyType: "Residential",
+    propertySize: 550,
+    taxStatus: "Exempt",
+    region: "Southern",
+    lga: "Jos South",
+    ward: "Vwang",
+    evaluationPrice: 16500000,
+  },
+  {
+    ownerName: "Mary Dung",
+    propertyId: "JS-34567",
+    lat: 9.9043,
+    lng: 8.9006,
+    propertyType: "Mixed Use",
+    propertySize: 1250,
+    taxStatus: "Paid",
+    region: "Southern",
+    lga: "Jos South",
+    ward: "Du",
+    evaluationPrice: 35000000,
+  },
+  {
+    ownerName: "Paul Gyang",
+    propertyId: "JS-45678",
+    lat: 9.9143,
+    lng: 8.8606,
+    propertyType: "Agricultural",
+    propertySize: 7500,
+    taxStatus: "Pending",
+    region: "Southern",
+    lga: "Jos South",
+    ward: "Kuru",
+    evaluationPrice: 42000000,
+  },
 ];
 
 // Recent activity data
@@ -123,7 +301,7 @@ const recentActivity = [
 // Define the map container style
 const mapContainerStyle = {
   width: "100%",
-  height: "400px",
+  height: "500px", // Increased height for better visibility
 };
 
 // Define the default center (Plateau State coordinates)
@@ -153,17 +331,66 @@ const Dashboard = () => {
     libraries,
   });
 
-  const [selectedLocation, setSelectedLocation] = useState<typeof locationPoints[0] | null>(null);
+  const [selectedLocation, setSelectedLocation] = useState<PropertyMetric | null>(null);
+  const [showStreetView, setShowStreetView] = useState(false);
+  const [mapType, setMapType] = useState<google.maps.MapTypeId>(google.maps.MapTypeId.ROADMAP);
 
-  // Calculate marker size based on weight
-  const getMarkerSize = (weight: number) => {
-    const minSize = 24;
-    const maxSize = 48;
-    const minWeight = 10; // Minimum weight in data
-    const maxWeight = 30; // Maximum weight in data
-    
-    return minSize + ((weight - minWeight) / (maxWeight - minWeight)) * (maxSize - minSize);
+  // Get marker color based on property type
+  const getMarkerColor = (propertyType: string) => {
+    switch (propertyType) {
+      case "Residential": return "#3B82F6"; // blue
+      case "Commercial": return "#10B981"; // green
+      case "Industrial": return "#F59E0B"; // amber
+      case "Agricultural": return "#6366F1"; // indigo
+      case "Mixed Use": return "#EC4899"; // pink
+      default: return "#3B82F6"; // blue default
+    }
   };
+
+  // Get marker icon based on tax status
+  const getMarkerIcon = (property: PropertyMetric) => {
+    const color = getMarkerColor(property.propertyType);
+    return {
+      path: google.maps.SymbolPath.CIRCLE,
+      fillColor: color,
+      fillOpacity: 0.8,
+      strokeWeight: 1,
+      strokeColor: "#FFFFFF",
+      scale: 10 + (property.propertySize / 1000), // Size based on property size
+    };
+  };
+
+  // Get status color
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "Paid": return "bg-green-100 text-green-800";
+      case "Pending": return "bg-yellow-100 text-yellow-800";
+      case "Overdue": return "bg-red-100 text-red-800";
+      case "Exempt": return "bg-blue-100 text-blue-800";
+      default: return "bg-gray-100 text-gray-800";
+    }
+  };
+
+  // Get status icon
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case "Paid": return <Check className="w-4 h-4" />;
+      case "Pending": return <Clock className="w-4 h-4" />;
+      case "Overdue": return <XCircle className="w-4 h-4" />;
+      case "Exempt": return <Shield className="w-4 h-4" />;
+      default: return <Info className="w-4 h-4" />;
+    }
+  };
+
+  // Toggle street view
+  const toggleStreetView = useCallback(() => {
+    setShowStreetView(!showStreetView);
+  }, [showStreetView]);
+
+  // Change map type
+  const changeMapType = useCallback((type: google.maps.MapTypeId) => {
+    setMapType(type);
+  }, []);
 
   return (
     <div className="container mx-auto p-4">
@@ -199,46 +426,177 @@ const Dashboard = () => {
           <MapPin className="w-5 h-5 mr-2 text-red-500" />
           Property Distribution Map
         </h2>
+        <div className="mb-4 flex flex-wrap gap-2">
+          <button 
+            onClick={() => changeMapType(google.maps.MapTypeId.ROADMAP)}
+            className={`px-3 py-1 rounded-md text-sm flex items-center gap-1 ${mapType === google.maps.MapTypeId.ROADMAP ? 'bg-blue-500 text-white' : 'bg-gray-100'}`}
+          >
+            <Map className="w-4 h-4" /> Road
+          </button>
+          <button 
+            onClick={() => changeMapType(google.maps.MapTypeId.SATELLITE)}
+            className={`px-3 py-1 rounded-md text-sm flex items-center gap-1 ${mapType === google.maps.MapTypeId.SATELLITE ? 'bg-blue-500 text-white' : 'bg-gray-100'}`}
+          >
+            <Layers className="w-4 h-4" /> Satellite
+          </button>
+          <button 
+            onClick={() => changeMapType(google.maps.MapTypeId.HYBRID)}
+            className={`px-3 py-1 rounded-md text-sm flex items-center gap-1 ${mapType === google.maps.MapTypeId.HYBRID ? 'bg-blue-500 text-white' : 'bg-gray-100'}`}
+          >
+            <Layers className="w-4 h-4" /> Hybrid
+          </button>
+          <button 
+            onClick={() => changeMapType(google.maps.MapTypeId.TERRAIN)}
+            className={`px-3 py-1 rounded-md text-sm flex items-center gap-1 ${mapType === google.maps.MapTypeId.TERRAIN ? 'bg-blue-500 text-white' : 'bg-gray-100'}`}
+          >
+            <Mountain className="w-4 h-4" /> Terrain
+          </button>
+        </div>
         {loadError && <div>Error loading maps</div>}
         {!isLoaded ? (
           <div className="flex justify-center items-center h-80">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
           </div>
         ) : (
-          <GoogleMap
-            mapContainerStyle={mapContainerStyle}
-            zoom={10}
-            center={center}
-          >
-            {locationPoints.map((point, index) => (
-              <Marker
-                key={index}
-                position={{ lat: point.lat, lng: point.lng }}
-                onClick={() => setSelectedLocation(point)}
-                icon={{
-                  path: google.maps.SymbolPath.CIRCLE,
-                  fillColor: '#3B82F6',
-                  fillOpacity: 0.8,
-                  strokeWeight: 1,
-                  strokeColor: '#1E40AF',
-                  scale: getMarkerSize(point.weight) / 10,
-                }}
-              />
-            ))}
+          <div className="relative rounded-lg overflow-hidden border border-gray-200">
+            <GoogleMap
+              mapContainerStyle={mapContainerStyle}
+              zoom={15}
+              center={center}
+              mapTypeId={mapType}
+              options={{
+                streetViewControl: true,
+                mapTypeControl: false, // We're using our custom controls
+                fullscreenControl: true,
+                zoomControl: true,
+                styles: [
+                  {
+                    featureType: "administrative",
+                    elementType: "geometry",
+                    stylers: [{ visibility: "on" }],
+                  },
+                  {
+                    featureType: "poi",
+                    stylers: [{ visibility: "on" }],
+                  },
+                ],
+              }}
+            >
+              {showStreetView && selectedLocation ? (
+                <StreetViewPanorama
+                  options={{
+                    position: { lat: selectedLocation.lat, lng: selectedLocation.lng },
+                    enableCloseButton: true,
+                    addressControl: true,
+                    visible: true
+                  }}
+                  onCloseclick={() => setShowStreetView(false)}
+                />
+              ) : (
+                <>
+                  {locationPoints.map((property, index) => (
+                    <Marker
+                      key={index}
+                      position={{ lat: property.lat, lng: property.lng }}
+                      onClick={() => {
+                        setSelectedLocation(property);
+                        setShowStreetView(false);
+                      }}
+                      icon={getMarkerIcon(property)}
+                      title={property.propertyId}
+                    />
+                  ))}
+                </>
+              )}
 
-            {selectedLocation && (
-              <InfoWindow
-                position={{ lat: selectedLocation.lat, lng: selectedLocation.lng }}
-                onCloseClick={() => setSelectedLocation(null)}
-              >
-                <div className="p-2">
-                  <h3 className="font-semibold text-gray-900">{selectedLocation.name}</h3>
-                  <p className="text-gray-700">Properties: {selectedLocation.properties.toLocaleString()}</p>
-                  <p className="text-gray-700">Density: {selectedLocation.weight}/30</p>
+              {selectedLocation && !showStreetView && (
+                <InfoWindow
+                  position={{ lat: selectedLocation.lat, lng: selectedLocation.lng }}
+                  onCloseClick={() => setSelectedLocation(null)}
+                >
+                  <div className="p-2 w-72 max-w-sm">
+                    <div className="flex justify-between items-start mb-2">
+                      <h3 className="font-semibold text-gray-900 text-lg">{selectedLocation.propertyId}</h3>
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1 ${getStatusColor(selectedLocation.taxStatus)}`}>
+                        {getStatusIcon(selectedLocation.taxStatus)}
+                        {selectedLocation.taxStatus}
+                      </span>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-2 mb-3">
+                      <div className="flex flex-col">
+                        <span className="text-xs text-gray-500">Owner</span>
+                        <span className="text-sm font-medium flex items-center gap-1">
+                          <User className="w-3 h-3" />
+                          {selectedLocation.ownerName}
+                        </span>
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-xs text-gray-500">Type</span>
+                        <span className="text-sm font-medium">{selectedLocation.propertyType}</span>
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-xs text-gray-500">Size</span>
+                        <span className="text-sm font-medium">{selectedLocation.propertySize} m²</span>
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-xs text-gray-500">Value</span>
+                        <span className="text-sm font-medium">₦{selectedLocation.evaluationPrice.toLocaleString()}</span>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-gray-50 p-2 rounded-md mb-3">
+                      <div className="text-xs text-gray-500 mb-1">Location</div>
+                      <div className="text-sm">
+                        {selectedLocation.ward}, {selectedLocation.lga}, {selectedLocation.region} Region
+                      </div>
+                    </div>
+                    
+                    <div className="flex gap-2">
+                      <button 
+                        onClick={toggleStreetView}
+                        className="flex-1 bg-blue-500 text-white px-3 py-1 rounded-md text-sm flex items-center justify-center gap-1"
+                      >
+                        <Eye className="w-4 h-4" /> Street View
+                      </button>
+                      <button 
+                        className="flex-1 bg-gray-100 px-3 py-1 rounded-md text-sm flex items-center justify-center gap-1"
+                        onClick={() => window.open(`/properties/${selectedLocation.propertyId}`, '_blank')}
+                      >
+                        <FileText className="w-4 h-4" /> Details
+                      </button>
+                    </div>
+                  </div>
+                </InfoWindow>
+              )}
+            </GoogleMap>
+            
+            <div className="absolute bottom-4 left-4 bg-white p-2 rounded-md shadow-md z-10">
+              <div className="text-xs text-gray-500 mb-1">Property Types</div>
+              <div className="grid grid-cols-2 gap-x-4 gap-y-1">
+                <div className="flex items-center gap-1">
+                  <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+                  <span className="text-xs">Residential</span>
                 </div>
-              </InfoWindow>
-            )}
-          </GoogleMap>
+                <div className="flex items-center gap-1">
+                  <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                  <span className="text-xs">Commercial</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <div className="w-3 h-3 rounded-full bg-amber-500"></div>
+                  <span className="text-xs">Industrial</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <div className="w-3 h-3 rounded-full bg-indigo-500"></div>
+                  <span className="text-xs">Agricultural</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <div className="w-3 h-3 rounded-full bg-pink-500"></div>
+                  <span className="text-xs">Mixed Use</span>
+                </div>
+              </div>
+            </div>
+          </div>
         )}
       </div>
 
