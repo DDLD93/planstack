@@ -35,6 +35,7 @@ interface PropertyMetric {
   region: string;
   lga: string;
   ward: string;
+  evaluationPrice: number;
 }
 
 // Mock Data
@@ -129,6 +130,7 @@ const propertyMetrics: PropertyMetric[] = [
     region: "Plateau",
     lga: "Jos North",
     ward: "Kabong",
+    evaluationPrice: 45000000,
   },
   {
     ownerName: "Jane Smith",
@@ -141,6 +143,7 @@ const propertyMetrics: PropertyMetric[] = [
     region: "Plateau",
     lga: "Riyom",
     ward: "Riyom",
+    evaluationPrice: 120000000,
   },
   {
     ownerName: "Alice Johnson",
@@ -153,6 +156,7 @@ const propertyMetrics: PropertyMetric[] = [
     region: "Plateau",
     lga: "Mikang",
     ward: "Mikang",
+    evaluationPrice: 350000000,
   },
   {
     ownerName: "Sani Bulus",
@@ -165,6 +169,7 @@ const propertyMetrics: PropertyMetric[] = [
     region: "Plateau",
     lga: "Mikang",
     ward: "Tunkus",
+    evaluationPrice: 120000000,
   },
   {
     ownerName: "Judith James",
@@ -177,6 +182,7 @@ const propertyMetrics: PropertyMetric[] = [
     region: "Plateau",
     lga: "Mikang",
     ward: "Mikang",
+    evaluationPrice: 42500000,
   },
   {
     ownerName: "Khadija Sani",
@@ -189,6 +195,7 @@ const propertyMetrics: PropertyMetric[] = [
     region: "Plateau",
     lga: "Jos North",
     ward: "Jenta",
+    evaluationPrice: 175000000,
   },
   {
     ownerName: "Daniel Walker",
@@ -201,7 +208,112 @@ const propertyMetrics: PropertyMetric[] = [
     region: "Plateau",
     lga: "Jos South",
     ward: "Bukuru",
+    evaluationPrice: 58000000,
   },
+  {
+    ownerName: "Mohammed Ibrahim",
+    propertyId: "PROP-33421",
+    lat: 9.896523,
+    lng: 8.859712,
+    propertyType: "Commercial",
+    propertySize: 850,
+    taxStatus: "Paid",
+    region: "Plateau",
+    lga: "Jos South",
+    ward: "Rayfield",
+    evaluationPrice: 92000000,
+  },
+  {
+    ownerName: "Grace Adamu",
+    propertyId: "PROP-45678",
+    lat: 9.832145,
+    lng: 8.912456,
+    propertyType: "Residential",
+    propertySize: 380,
+    taxStatus: "Paid",
+    region: "Plateau",
+    lga: "Jos East",
+    ward: "Fursum",
+    evaluationPrice: 32500000,
+  },
+  {
+    ownerName: "Samuel Johnson",
+    propertyId: "PROP-98765",
+    lat: 9.914236,
+    lng: 8.867123,
+    propertyType: "Industrial",
+    propertySize: 4200,
+    taxStatus: "Unpaid",
+    region: "Plateau",
+    lga: "Jos North",
+    ward: "Tafawa Balewa",
+    evaluationPrice: 420000000,
+  },
+  {
+    ownerName: "Fatima Hassan",
+    propertyId: "PROP-24680",
+    lat: 9.872341,
+    lng: 8.923451,
+    propertyType: "Agricultural",
+    propertySize: 12000,
+    taxStatus: "Exempt",
+    region: "Plateau",
+    lga: "Bassa",
+    ward: "Bassa",
+    evaluationPrice: 180000000,
+  },
+  {
+    ownerName: "Peter Obi",
+    propertyId: "PROP-13579",
+    lat: 9.843621,
+    lng: 8.901234,
+    propertyType: "Mixed Use",
+    propertySize: 2100,
+    taxStatus: "Partially Paid",
+    region: "Plateau",
+    lga: "Bokkos",
+    ward: "Bokkos",
+    evaluationPrice: 195000000,
+  },
+  {
+    ownerName: "Elizabeth Danladi",
+    propertyId: "PROP-86420",
+    lat: 9.789654,
+    lng: 8.876543,
+    propertyType: "Residential",
+    propertySize: 520,
+    taxStatus: "Paid",
+    region: "Plateau",
+    lga: "Pankshin",
+    ward: "Pankshin",
+    evaluationPrice: 48500000,
+  },
+  {
+    ownerName: "Ahmed Mohammed",
+    propertyId: "PROP-97531",
+    lat: 9.923456,
+    lng: 8.845678,
+    propertyType: "Commercial",
+    propertySize: 1450,
+    taxStatus: "Unpaid",
+    region: "Plateau",
+    lga: "Mangu",
+    ward: "Mangu",
+    evaluationPrice: 155000000,
+  },
+  {
+    ownerName: "Victoria Emmanuel",
+    propertyId: "PROP-15973",
+    lat: 9.853421,
+    lng: 8.932145,
+    propertyType: "Residential",
+    propertySize: 420,
+    taxStatus: "Paid",
+    region: "Plateau",
+    lga: "Kanke",
+    ward: "Kanke",
+    evaluationPrice: 38000000,
+  }
 ];
 
 // Define the column helper for the data table
@@ -249,6 +361,10 @@ const columns = [
   columnHelper.accessor("propertySize", {
     header: "Size (sqm)",
     cell: (info) => info.getValue(),
+  }),
+  columnHelper.accessor("evaluationPrice", {
+    header: "Evaluation (₦)",
+    cell: (info) => info.getValue().toLocaleString(),
   }),
   columnHelper.accessor("taxStatus", {
     header: "Tax Status",
@@ -407,6 +523,7 @@ const Properties = () => {
                     <p>Property ID: {selectedMarker.propertyId}</p>
                     <p>Type: {selectedMarker.propertyType}</p>
                     <p>Size: {selectedMarker.propertySize} sqm</p>
+                    <p>Evaluation: ₦{selectedMarker.evaluationPrice.toLocaleString()}</p>
                     <p>LGA: {selectedMarker.lga}</p>
                     <p>Ward: {selectedMarker.ward}</p>
                     <p>Tax Status: {selectedMarker.taxStatus}</p>

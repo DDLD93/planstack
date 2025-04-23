@@ -74,8 +74,8 @@ const Layout: React.FC = () => {
               to={item.path}
               className={`flex items-center gap-3 p-4 rounded-lg transition-all duration-200 ${
                 isCurrentPath(item.path)
-                  ? 'bg-red-50 text-red-600'
-                  : 'text-gray-700 hover:bg-gray-50 hover:text-red-600'
+                  ? 'bg-green-50 text-green-600'
+                  : 'text-gray-700 hover:bg-gray-50 hover:text-green-600'
               }`}
             >
               {item.icon}
@@ -86,7 +86,7 @@ const Layout: React.FC = () => {
 
         <Button
           onClick={handleLogout}
-          className="absolute bottom-8 left-4 flex items-center gap-3 p-4 rounded-lg text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors duration-200"
+          className="absolute bottom-8 left-4 flex items-center gap-3 p-4 rounded-lg text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors duration-200"
         >
           <LogOut size={20} />
           {isSidebarOpen && <span className="font-medium">Logout</span>}
@@ -105,7 +105,7 @@ const Layout: React.FC = () => {
               <input
                 type="text"
                 placeholder="Search..."
-                className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
               />
             </div>
           </div>
@@ -113,11 +113,11 @@ const Layout: React.FC = () => {
           <div className="flex items-center gap-4">
             <Button className="p-2 hover:bg-gray-100 rounded-lg relative">
               <Bell size={20} className="text-gray-600" />
-              <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+              <span className="absolute top-1 right-1 w-2 h-2 bg-green-500 rounded-full"></span>
             </Button>
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
-                <User size={20} className="text-red-600" />
+              <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                <User size={20} className="text-green-600" />
               </div>
               <div className="hidden md:block">
                 <p className="text-sm font-medium text-gray-700">{user?.name}</p>

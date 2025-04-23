@@ -36,6 +36,7 @@ interface RevenueSummary {
   taxComplianceRate: number;
   taxLossDueToVacant: number;
   taxLossDueToUndeveloped: number;
+  totalEvaluationPrice: number;
 }
 
 // Mock Data
@@ -91,6 +92,14 @@ const mockData = {
     { region: "Bokkos", revenue: 1500000 },
     { region: "Other Regions", revenue: 3000000 },
   ],
+  
+  revenueVsEvaluation: [
+    { region: "Jos North", revenue: 8000000, evaluation: 315000000000 },
+    { region: "Jos South", revenue: 6500000, evaluation: 378000000000 },
+    { region: "Mangu", revenue: 3500000, evaluation: 126000000000 },
+    { region: "Barkin Ladi", revenue: 2500000, evaluation: 90000000000 },
+    { region: "Bokkos", revenue: 1500000, evaluation: 63000000000 },
+  ],
 };
 
 // Mock data for regional revenue summary table
@@ -104,6 +113,7 @@ const revenueSummary: RevenueSummary[] = [
     taxComplianceRate: 80,
     taxLossDueToVacant: 1000000,
     taxLossDueToUndeveloped: 700000,
+    totalEvaluationPrice: 315000000000,
   },
   {
     region: "Plateau",
@@ -114,6 +124,7 @@ const revenueSummary: RevenueSummary[] = [
     taxComplianceRate: 75,
     taxLossDueToVacant: 1500000,
     taxLossDueToUndeveloped: 750000,
+    totalEvaluationPrice: 378000000000,
   },
   {
     region: "Plateau",
@@ -124,6 +135,7 @@ const revenueSummary: RevenueSummary[] = [
     taxComplianceRate: 70,
     taxLossDueToVacant: 600000,
     taxLossDueToUndeveloped: 450000,
+    totalEvaluationPrice: 126000000000,
   },
   {
     region: "Plateau",
@@ -134,6 +146,7 @@ const revenueSummary: RevenueSummary[] = [
     taxComplianceRate: 65,
     taxLossDueToVacant: 500000,
     taxLossDueToUndeveloped: 375000,
+    totalEvaluationPrice: 90000000000,
   },
   {
     region: "Plateau",
@@ -144,6 +157,7 @@ const revenueSummary: RevenueSummary[] = [
     taxComplianceRate: 58,
     taxLossDueToVacant: 350000,
     taxLossDueToUndeveloped: 275000,
+    totalEvaluationPrice: 63000000000,
   },
 ];
 
@@ -187,6 +201,10 @@ const columns = [
   }),
   columnHelper.accessor("taxLossDueToUndeveloped", {
     header: "Loss (Undeveloped)",
+    cell: (info) => `₦${info.getValue().toLocaleString()}`,
+  }),
+  columnHelper.accessor("totalEvaluationPrice", {
+    header: "Total Evaluation Price",
     cell: (info) => `₦${info.getValue().toLocaleString()}`,
   }),
 ];
@@ -364,8 +382,38 @@ const Revenue = () => {
 
       {/* Revenue Summary Table */}
       <div className="bg-white rounded-lg shadow p-4 mb-8">
-        <h2 className="text-lg font-semibold mb-4">Revenue Summary by Region</h2>
+        <h2 className="text-lg font-semibold mb-4">Regional Revenue Summary</h2>
         <DataTable columns={columns} data={revenueSummary} />
+      </div>
+      
+      {/* Revenue vs Property Evaluation Value */}
+      <div className="bg-white rounded-lg shadow p-4 mb-8">
+        <h2 className="text-lg font-semibold mb-4 flex items-center">
+          <BarChart2 className="w-5 h-5 mr-2 text-purple-500" />
+          Revenue vs Property Evaluation
+        </h2>
+        <div className="h-80">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart
+              data={mockData.revenueVsEvaluation}
+              margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="region" />
+              <YAxis yAxisId="left" orientation="left" stroke="#3B82F6" />
+              <YAxis yAxisId="right" orientation="right" stroke="#F97316" />
+              <Tooltip formatter={(value, name) => {
+                if (name === "revenue") return [`₦${value.toLocaleString()}`, "Revenue"];
+                if (name === "evaluation") return [`₦${value.toLocaleString()}`, "Evaluation Value"];
+                return [value, name];
+              }} />
+              <Legend />
+              <Bar yAxisId="left" dataKey="revenue" fill="#3B82F6" name="Revenue" />
+              <Bar yAxisId="right" dataKey="evaluation" fill="#F97316" name="Evaluation Value" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+        <p className="text-sm text-gray-500 mt-2">Note: The evaluation values are significantly higher than revenue and use a different scale (right axis).</p>
       </div>
     </div>
   );

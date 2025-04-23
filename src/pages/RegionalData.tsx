@@ -36,6 +36,7 @@ interface RegionSummary {
   propertyDensity: number;
   averagePropertySize: number;
   valuePerSqMeter: number;
+  totalEvaluationPrice: number;
 }
 
 // Define HeatMapPoint type
@@ -156,6 +157,7 @@ const regionSummary: RegionSummary[] = [
     propertyDensity: 175,
     averagePropertySize: 420,
     valuePerSqMeter: 80000,
+    totalEvaluationPrice: 2100 * 420 * 80000, // 70,560,000,000
   },
   {
     region: "Plateau",
@@ -168,6 +170,7 @@ const regionSummary: RegionSummary[] = [
     propertyDensity: 180,
     averagePropertySize: 380,
     valuePerSqMeter: 85000,
+    totalEvaluationPrice: 1800 * 380 * 85000, // 58,140,000,000
   },
   {
     region: "Plateau",
@@ -180,6 +183,7 @@ const regionSummary: RegionSummary[] = [
     propertyDensity: 206,
     averagePropertySize: 350,
     valuePerSqMeter: 90000,
+    totalEvaluationPrice: 1650 * 350 * 90000, // 51,975,000,000
   },
   {
     region: "Plateau",
@@ -192,6 +196,7 @@ const regionSummary: RegionSummary[] = [
     propertyDensity: 127,
     averagePropertySize: 480,
     valuePerSqMeter: 75000,
+    totalEvaluationPrice: 1900 * 480 * 75000, // 68,400,000,000
   },
   {
     region: "Plateau",
@@ -204,6 +209,7 @@ const regionSummary: RegionSummary[] = [
     propertyDensity: 83,
     averagePropertySize: 520,
     valuePerSqMeter: 70000,
+    totalEvaluationPrice: 1500 * 520 * 70000, // 54,600,000,000
   },
 ];
 
@@ -242,6 +248,10 @@ const columns = [
   }),
   columnHelper.accessor("valuePerSqMeter", {
     header: "Value/m²",
+    cell: (info) => `₦${info.getValue().toLocaleString()}`,
+  }),
+  columnHelper.accessor("totalEvaluationPrice", {
+    header: "Total Evaluation",
     cell: (info) => `₦${info.getValue().toLocaleString()}`,
   }),
 ];
@@ -284,7 +294,7 @@ const RegionalData = () => {
       <h1 className="text-2xl font-bold mb-6">Regional Data Analysis</h1>
 
       {/* Stats Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4 mb-8">
         <StatCard
           title="Total Regions Analyzed"
           value={mockData.regionBreakdown.length}
@@ -304,6 +314,11 @@ const RegionalData = () => {
           title="Total Land Area"
           value={`${mockData.regionBreakdown.reduce((sum, item) => sum + item.area, 0)} km²`}
           icon={<MapIcon className="w-5 h-5" />}
+        />
+        <StatCard
+          title="Total Evaluation Value"
+          value={`₦${regionSummary.reduce((sum, item) => sum + item.totalEvaluationPrice, 0).toLocaleString()}`}
+          icon={<BarChart2 className="w-5 h-5" />}
         />
       </div>
 

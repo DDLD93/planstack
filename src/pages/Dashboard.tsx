@@ -34,6 +34,7 @@ const dashboardData = {
   totalRevenue: 25000000,
   totalRegions: 17,
   pendingValidations: 245,
+  totalEvaluationPrice: 972000000000,
   
   propertyTypeDistribution: [
     { name: "Residential", value: 14000, color: "#3B82F6" },
@@ -169,14 +170,14 @@ const Dashboard = () => {
           icon={<DollarSign className="w-5 h-5" />}
         />
         <StatCard
+          title="Total Evaluation"
+          value={`₦${dashboardData.totalEvaluationPrice.toLocaleString()}`}
+          icon={<FileText className="w-5 h-5" />}
+        />
+        <StatCard
           title="Regions Covered"
           value={dashboardData.totalRegions}
           icon={<MapPin className="w-5 h-5" />}
-        />
-        <StatCard
-          title="Pending Validations"
-          value={dashboardData.pendingValidations}
-          icon={<FileText className="w-5 h-5" />}
         />
       </div>
 
