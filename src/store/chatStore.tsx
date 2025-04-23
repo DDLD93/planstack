@@ -37,33 +37,33 @@ export const useChatStore = create<ChatState>((set, get) => ({
   predefinedPrompts: [
     {
       id: '1',
-      title: 'Analyze power consumption',
-      content: 'Analyze my feeder data for power consumption patterns and suggest optimization strategies. Present your analysis with formatted lists, tables if applicable, and highlight key insights.',
+      title: 'Analyze property evaluation',
+      content: 'Analyze our property data for evaluation price patterns across different regions and property types. What insights can you provide about how property values vary by location and property characteristics?',
     },
     {
       id: '2',
-      title: 'Explain technical terms',
-      content: 'Can you explain the technical terms related to voltage regulation in simple language? Use proper formatting with headings, bullet points, and perhaps some code examples where relevant.',
+      title: 'Explain tax compliance',
+      content: 'Can you explain the different tax status categories in our system and provide best practices for improving tax compliance rates? Please format your response with clear sections and bullet points.',
     },
     {
       id: '3',
-      title: 'Troubleshoot metering issues',
-      content: 'What are common metering issues that could lead to inaccurate readings and how can I fix them? Present solutions in a step-by-step format with numbered lists.',
+      title: 'Property valuation factors',
+      content: 'What are the main factors that influence property evaluation prices in our system? How do elements like location, property size, and property type impact overall valuation?',
     },
     {
       id: '4',
-      title: 'Revenue optimization',
-      content: 'How can I optimize revenue collection based on current consumption patterns? Organize your recommendations in sections with clear headings and bullet points.',
+      title: 'Revenue optimization strategies',
+      content: 'Based on our property evaluation data, what strategies would you recommend to optimize revenue collection? Please organize your recommendations by region and property type.',
     },
     {
       id: '5',
-      title: 'Customer service improvement',
-      content: 'What strategies can improve customer service in our electricity distribution system? Please include a comparative table showing pros and cons of different approaches.',
+      title: 'Regional property analysis',
+      content: 'Compare property metrics across different LGAs in our system. Which areas have the highest property values and what characteristics contribute to this? Please include a comparative table in your response.',
     },
     {
       id: '6',
-      title: 'Markdown capabilities',
-      content: 'Demonstrate your markdown capabilities by showing examples of headings, lists, tables, code blocks, blockquotes, and other formatting features.',
+      title: 'Property size vs. evaluation',
+      content: 'Analyze the relationship between property size and evaluation price in our data. Is there a consistent correlation or does it vary by region and property type? Please include any notable patterns in your analysis.',
     },
   ],
   
@@ -97,7 +97,9 @@ export const useChatStore = create<ChatState>((set, get) => ({
         systemInstruction: {
           role: "system",
           parts: [{ 
-            text: `You are a helpful and knowledgeable assistant for Planstack PLS electricity operations. 
+            text: `You are a helpful and knowledgeable assistant for Lands and Survey property management system. 
+            You provide insights on property evaluation, tax status, and regional analytics.
+            
             Format your responses using Markdown syntax for better readability. Use:
             - Headings (# ## ###) for organization
             - **Bold** and *italic* for emphasis
@@ -107,7 +109,10 @@ export const useChatStore = create<ChatState>((set, get) => ({
             - Tables for comparative data
             - > Blockquotes for important notes
             
-            Always provide comprehensive, well-structured responses. When discussing data or metrics, 
+            You understand property metrics including owner information, location data, property type,
+            property size, tax status, region/LGA/ward classifications, and most importantly, property evaluation prices.
+            
+            Always provide comprehensive, well-structured responses. When discussing property data or metrics, 
             organize information in a visually clear way using appropriate markdown formatting.`
           }],
         },

@@ -86,7 +86,7 @@ const Login: React.FC = () => {
         </form>
 
         <div className="mt-6 text-center text-sm text-gray-600">
-          <p>Protected by UbiSoft Security</p>
+          <p>Protected by Prisma Forge</p>
         </div>
       </div>
     </div>
