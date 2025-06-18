@@ -25,6 +25,7 @@ import {
   AlertTriangle,
   Activity,
 } from "lucide-react";
+import { PropertyType } from "../types";
 
 // Define the RevenueSummary type
 interface RevenueSummary {
@@ -35,7 +36,6 @@ interface RevenueSummary {
   actualRevenue: number;
   taxComplianceRate: number;
   taxLossDueToVacant: number;
-  taxLossDueToUndeveloped: number;
   totalEvaluationPrice: number;
 }
 
@@ -47,24 +47,23 @@ const mockData = {
   revenueLoss: 7500000,
   
   revenueByPropertyType: [
-    { name: "Residential", value: 10000000, color: "#3B82F6" },
-    { name: "Commercial", value: 7500000, color: "#10B981" },
-    { name: "Industrial", value: 5000000, color: "#F59E0B" },
-    { name: "Agricultural", value: 2000000, color: "#6366F1" },
-    { name: "Mixed Use", value: 500000, color: "#EC4899" },
+    { name: PropertyType.Residential, value: 10000000, color: "#3B82F6" },
+    { name: PropertyType.Commercial, value: 7500000, color: "#10B981" },
+    { name: PropertyType.Industrial, value: 5000000, color: "#F59E0B" },
+    { name: PropertyType.Agricultural, value: 2000000, color: "#6366F1" },
+    { name: PropertyType.Mixed, value: 500000, color: "#EC4899" },
   ],
   
   taxComplianceByPropertyType: [
-    { type: "Residential", compliance: 75 },
-    { type: "Commercial", compliance: 85 },
-    { type: "Industrial", compliance: 90 },
-    { type: "Agricultural", compliance: 65 },
-    { type: "Mixed Use", compliance: 70 },
+    { type: PropertyType.Residential, compliance: 75 },
+    { type: PropertyType.Commercial, compliance: 85 },
+    { type: PropertyType.Industrial, compliance: 90 },
+    { type: PropertyType.Agricultural, compliance: 65 },
+    { type: PropertyType.Mixed, compliance: 70 },
   ],
   
   revenueLossCauses: [
     { name: "Vacant Properties", value: 3000000, color: "#EF4444" },
-    { name: "Undeveloped Land", value: 2500000, color: "#F59E0B" },
     { name: "Tax Evasion", value: 1500000, color: "#8B5CF6" },
     { name: "Exemptions", value: 500000, color: "#10B981" },
   ],
@@ -112,7 +111,6 @@ const revenueSummary: RevenueSummary[] = [
     actualRevenue: 6800000,
     taxComplianceRate: 80,
     taxLossDueToVacant: 1000000,
-    taxLossDueToUndeveloped: 700000,
     totalEvaluationPrice: 315000000000,
   },
   {
@@ -123,7 +121,6 @@ const revenueSummary: RevenueSummary[] = [
     actualRevenue: 6750000,
     taxComplianceRate: 75,
     taxLossDueToVacant: 1500000,
-    taxLossDueToUndeveloped: 750000,
     totalEvaluationPrice: 378000000000,
   },
   {
@@ -134,7 +131,6 @@ const revenueSummary: RevenueSummary[] = [
     actualRevenue: 2450000,
     taxComplianceRate: 70,
     taxLossDueToVacant: 600000,
-    taxLossDueToUndeveloped: 450000,
     totalEvaluationPrice: 126000000000,
   },
   {
@@ -145,7 +141,6 @@ const revenueSummary: RevenueSummary[] = [
     actualRevenue: 1625000,
     taxComplianceRate: 65,
     taxLossDueToVacant: 500000,
-    taxLossDueToUndeveloped: 375000,
     totalEvaluationPrice: 90000000000,
   },
   {
@@ -156,7 +151,6 @@ const revenueSummary: RevenueSummary[] = [
     actualRevenue: 875000,
     taxComplianceRate: 58,
     taxLossDueToVacant: 350000,
-    taxLossDueToUndeveloped: 275000,
     totalEvaluationPrice: 63000000000,
   },
 ];
@@ -197,10 +191,6 @@ const columns = [
   }),
   columnHelper.accessor("taxLossDueToVacant", {
     header: "Loss (Vacant)",
-    cell: (info) => `₦${info.getValue().toLocaleString()}`,
-  }),
-  columnHelper.accessor("taxLossDueToUndeveloped", {
-    header: "Loss (Undeveloped)",
     cell: (info) => `₦${info.getValue().toLocaleString()}`,
   }),
   columnHelper.accessor("totalEvaluationPrice", {

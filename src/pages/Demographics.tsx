@@ -32,6 +32,7 @@ import { BsLightningCharge } from "react-icons/bs";
 import { DataTable } from "../components/Table/DataTable";
 import { Chip, CircularProgress } from "@mui/material";
 import { createColumnHelper } from "@tanstack/react-table";
+import { DevelopmentStatus, OccupancyStatus, PropertyType } from "../types";
 
 // Define the DemographicsData type
 interface RegionDemographics {
@@ -43,8 +44,7 @@ interface RegionDemographics {
   commercialCount: number;
   industrialCount: number;
   agriculturalCount: number;
-  mixedUseCount: number;
-  undevelopedCount: number;
+  mixedCount: number;
   averagePropertySize: number;
   multipleOwnershipPercentage: number;
 }
@@ -89,22 +89,21 @@ const mockData = {
     { type: "Overloading", count: 200 },
   ],
   propertyTypeBreakdown: [
-    { name: "Residential", value: 7000, color: "#3B82F6" },
-    { name: "Commercial", value: 2500, color: "#10B981" },
-    { name: "Industrial", value: 500, color: "#F59E0B" },
-    { name: "Agricultural", value: 800, color: "#6366F1" },
-    { name: "Mixed Use", value: 200, color: "#EC4899" },
-    { name: "Undeveloped", value: 1000, color: "#8B5CF6" },
+    { name: PropertyType.Residential, value: 7000, color: "#3B82F6" },
+    { name: PropertyType.Commercial, value: 2500, color: "#10B981" },
+    { name: PropertyType.Industrial, value: 500, color: "#F59E0B" },
+    { name: PropertyType.Agricultural, value: 800, color: "#6366F1" },
+    { name: PropertyType.Mixed, value: 200, color: "#EC4899" },
   ],
   developmentStatus: [
-    { name: "Developed", value: 6000, color: "#22C55E" },
-    { name: "Undeveloped", value: 3000, color: "#F97316" },
-    { name: "Partially Developed", value: 1000, color: "#06B6D4" },
+    { name: DevelopmentStatus.Developed, value: 6000, color: "#22C55E" },
+    { name: DevelopmentStatus.Undeveloped, value: 3000, color: "#F97316" },
+    { name: DevelopmentStatus.UnderDevelopment, value: 1000, color: "#06B6D4" },
   ],
   occupancyStatus: [
-    { name: "Occupied", value: 7500, color: "#3B82F6" },
-    { name: "Vacant", value: 1500, color: "#EF4444" },
-    { name: "Partially Occupied", value: 1000, color: "#F59E0B" },
+    { name: OccupancyStatus.Occupied, value: 7500, color: "#3B82F6" },
+    { name: OccupancyStatus.Vacant, value: 1500, color: "#EF4444" },
+    { name: OccupancyStatus.PartiallyOccupied, value: 1000, color: "#F59E0B" },
   ],
   multipleOwnershipByRegion: [
     { region: "Jos North", percentage: 45 },
@@ -139,8 +138,7 @@ const regionDemographics: RegionDemographics[] = [
     commercialCount: 500,
     industrialCount: 50,
     agriculturalCount: 20,
-    mixedUseCount: 80,
-    undevelopedCount: 50,
+    mixedCount: 80,
     averagePropertySize: 450,
     multipleOwnershipPercentage: 35,
   },
@@ -153,8 +151,7 @@ const regionDemographics: RegionDemographics[] = [
     commercialCount: 800,
     industrialCount: 150,
     agriculturalCount: 50,
-    mixedUseCount: 100,
-    undevelopedCount: 100,
+    mixedCount: 100,
     averagePropertySize: 520,
     multipleOwnershipPercentage: 28,
   },
@@ -167,8 +164,7 @@ const regionDemographics: RegionDemographics[] = [
     commercialCount: 300,
     industrialCount: 20,
     agriculturalCount: 200,
-    mixedUseCount: 30,
-    undevelopedCount: 50,
+    mixedCount: 30,
     averagePropertySize: 650,
     multipleOwnershipPercentage: 22,
   },
@@ -181,8 +177,7 @@ const regionDemographics: RegionDemographics[] = [
     commercialCount: 250,
     industrialCount: 30,
     agriculturalCount: 250,
-    mixedUseCount: 20,
-    undevelopedCount: 50,
+    mixedCount: 20,
     averagePropertySize: 720,
     multipleOwnershipPercentage: 18,
   },
@@ -195,8 +190,7 @@ const regionDemographics: RegionDemographics[] = [
     commercialCount: 200,
     industrialCount: 50,
     agriculturalCount: 280,
-    mixedUseCount: 20,
-    undevelopedCount: 50,
+    mixedCount: 20,
     averagePropertySize: 850,
     multipleOwnershipPercentage: 15,
   },
@@ -249,171 +243,142 @@ const Demographics = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-8">
         <StatCard
           title="Total Properties"
-          value={mockData.propertyTypeBreakdown.reduce((sum, item) => sum + item.value, 0)}
-          icon={<Building className="w-5 h-5" />}
+          value={mockData.totalCustomers.toLocaleString()}
+          icon={<Home className="text-blue-500" />}
         />
         <StatCard
-          title="Residential Properties"
-          value={mockData.propertyTypeBreakdown.find(item => item.name === "Residential")?.value || 0}
-          icon={<Home className="w-5 h-5" />}
+          title="Average Property Size"
+          value={`${(
+            regionDemographics.reduce(
+              (acc, curr) => acc + curr.averagePropertySize,
+              0
+            ) / regionDemographics.length
+          ).toFixed(2)} sqm`}
+          icon={<Building className="text-green-500" />}
         />
         <StatCard
-          title="Developed Properties"
-          value={mockData.developmentStatus.find(item => item.name === "Developed")?.value || 0}
-          icon={<Building className="w-5 h-5" />}
+          title="Multiple Ownership Rate"
+          value={`${(
+            mockData.multipleOwnershipByRegion.reduce(
+              (acc, curr) => acc + curr.percentage,
+              0
+            ) / mockData.multipleOwnershipByRegion.length
+          ).toFixed(2)}%`}
+          icon={<Users className="text-yellow-500" />}
         />
         <StatCard
-          title="Properties with Multiple Owners"
-          value={(mockData.propertyTypeBreakdown.reduce((sum, item) => sum + item.value, 0) * 0.25).toFixed(0)}
-          icon={<Users className="w-5 h-5" />}
+          title="Highest Property Region"
+          value={
+            mockData.multipleOwnershipByRegion.sort(
+              (a, b) => b.percentage - a.percentage
+            )[0].region
+          }
+          icon={<Globe className="text-purple-500" />}
         />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        {/* Property Type Distribution */}
-        <div className="bg-white rounded-lg shadow p-4">
-          <h2 className="text-lg font-semibold mb-4 flex items-center">
-            <PieChartIcon className="w-5 h-5 mr-2 text-blue-500" />
-            Property Type Distribution
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        {/* Property Type Breakdown */}
+        <div className="bg-white p-6 rounded-lg shadow-md">
+          <h2 className="text-lg font-semibold mb-4">
+            Property Type Breakdown
           </h2>
-          <div className="h-80">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={mockData.propertyTypeBreakdown}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={true}
-                  label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                  outerRadius={100}
-                  fill="#8884d8"
-                  dataKey="value"
-                >
-                  {mockData.propertyTypeBreakdown.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip formatter={(value) => value.toLocaleString()} />
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
+          <ResponsiveContainer width="100%" height={300}>
+            <PieChart>
+              <Pie
+                data={mockData.propertyTypeBreakdown}
+                cx="50%"
+                cy="50%"
+                labelLine={false}
+                outerRadius={100}
+                fill="#8884d8"
+                dataKey="value"
+                nameKey="name"
+                label={({ name, percent }) =>
+                  `${name}: ${(percent * 100).toFixed(0)}%`
+                }
+              >
+                {mockData.propertyTypeBreakdown.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.color} />
+                ))}
+              </Pie>
+              <Tooltip />
+              <Legend />
+            </PieChart>
+          </ResponsiveContainer>
         </div>
 
         {/* Development Status */}
-        <div className="bg-white rounded-lg shadow p-4">
-          <h2 className="text-lg font-semibold mb-4 flex items-center">
-            <PieChartIcon className="w-5 h-5 mr-2 text-green-500" />
-            Development Status
-          </h2>
-          <div className="h-80">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={mockData.developmentStatus}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={true}
-                  label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                  outerRadius={100}
-                  fill="#8884d8"
-                  dataKey="value"
-                >
-                  {mockData.developmentStatus.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip formatter={(value) => value.toLocaleString()} />
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
+        <div className="bg-white p-6 rounded-lg shadow-md">
+          <h2 className="text-lg font-semibold mb-4">Development Status</h2>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={mockData.developmentStatus}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="value" fill="#82ca9d">
+                {mockData.developmentStatus.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.color} />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
         {/* Occupancy Status */}
-        <div className="bg-white rounded-lg shadow p-4">
-          <h2 className="text-lg font-semibold mb-4 flex items-center">
-            <PieChartIcon className="w-5 h-5 mr-2 text-purple-500" />
-            Occupancy Status
-          </h2>
-          <div className="h-80">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={mockData.occupancyStatus}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={true}
-                  label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                  outerRadius={100}
-                  fill="#8884d8"
-                  dataKey="value"
-                >
-                  {mockData.occupancyStatus.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip formatter={(value) => value.toLocaleString()} />
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
+        <div className="bg-white p-6 rounded-lg shadow-md">
+          <h2 className="text-lg font-semibold mb-4">Occupancy Status</h2>
+          <ResponsiveContainer width="100%" height={300}>
+            <PieChart>
+              <Pie
+                data={mockData.occupancyStatus}
+                cx="50%"
+                cy="50%"
+                labelLine={false}
+                outerRadius={100}
+                fill="#8884d8"
+                dataKey="value"
+                nameKey="name"
+                label={({ name, percent }) =>
+                  `${name}: ${(percent * 100).toFixed(0)}%`
+                }
+              >
+                {mockData.occupancyStatus.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.color} />
+                ))}
+              </Pie>
+              <Tooltip />
+              <Legend />
+            </PieChart>
+          </ResponsiveContainer>
         </div>
 
         {/* Property Size Distribution */}
-        <div className="bg-white rounded-lg shadow p-4">
-          <h2 className="text-lg font-semibold mb-4 flex items-center">
-            <BarChart2 className="w-5 h-5 mr-2 text-blue-500" />
+        <div className="bg-white p-6 rounded-lg shadow-md">
+          <h2 className="text-lg font-semibold mb-4">
             Property Size Distribution
           </h2>
-          <div className="h-80">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={mockData.propertySizeDistribution}
-                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="size" />
-                <YAxis />
-                <Tooltip formatter={(value) => value.toLocaleString()} />
-                <Legend />
-                <Bar dataKey="count" fill="#3B82F6" name="Number of Properties" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-      </div>
-
-      {/* Multiple Ownership by Region */}
-      <div className="bg-white rounded-lg shadow p-4 mb-8">
-        <h2 className="text-lg font-semibold mb-4 flex items-center">
-          <Activity className="w-5 h-5 mr-2 text-red-500" />
-          Multiple Ownership by Region
-        </h2>
-        <div className="h-80">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart
-              data={mockData.multipleOwnershipByRegion}
-              margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-            >
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={mockData.propertySizeDistribution}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="region" />
+              <XAxis dataKey="size" />
               <YAxis />
-              <Tooltip formatter={(value) => `${value}%`} />
+              <Tooltip />
               <Legend />
-              <Bar dataKey="percentage" fill="#EF4444" name="Multiple Ownership (%)" />
+              <Bar dataKey="count" fill="#8884d8" />
             </BarChart>
           </ResponsiveContainer>
         </div>
       </div>
 
       {/* Regional Demographics Table */}
-      <div className="bg-white rounded-lg shadow p-4 mb-8">
-        <h2 className="text-lg font-semibold mb-4 flex items-center">
-          <Globe className="w-5 h-5 mr-2 text-indigo-500" />
-          Regional Demographics
+      <div className="bg-white p-6 rounded-lg shadow-md">
+        <h2 className="text-lg font-semibold mb-4">
+          Regional Demographics Overview
         </h2>
         <DataTable columns={columns} data={regionDemographics} />
       </div>
@@ -421,14 +386,21 @@ const Demographics = () => {
   );
 };
 
-// StatCard Component
-const StatCard = ({ title, value, icon }: { title: string; value: number | string; icon: React.ReactNode }) => (
-  <div className="bg-white rounded-lg shadow p-4 flex flex-col">
-    <div className="flex items-center justify-between mb-2">
-      <h3 className="text-gray-500 text-sm font-medium">{title}</h3>
-      <div className="p-2 bg-blue-50 text-blue-600 rounded-lg">{icon}</div>
+const StatCard = ({
+  title,
+  value,
+  icon,
+}: {
+  title: string;
+  value: number | string;
+  icon: React.ReactNode;
+}) => (
+  <div className="bg-white p-6 rounded-lg shadow-md flex items-center">
+    <div className="mr-4">{icon}</div>
+    <div>
+      <p className="text-gray-600 text-sm">{title}</p>
+      <p className="text-2xl font-bold">{value}</p>
     </div>
-    <p className="text-2xl font-bold">{typeof value === 'number' ? value.toLocaleString() : value}</p>
   </div>
 );
 

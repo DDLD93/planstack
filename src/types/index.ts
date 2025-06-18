@@ -1,4 +1,98 @@
-export interface PropertyRecord {
+// Enums
+export enum PropertyType {
+  Residential = 'Residential',
+  Commercial = 'Commercial',
+  Industrial = 'Industrial',
+  Agricultural = 'Agricultural',
+  Mixed = 'Mixed'
+}
+
+export enum DevelopmentStatus {
+  Developed = 'Developed',
+  UnderDevelopment = 'UnderDevelopment',
+  Undeveloped = 'Undeveloped'
+}
+
+export enum OccupancyStatus {
+  Occupied = 'Occupied',
+  Vacant = 'Vacant',
+  PartiallyOccupied = 'PartiallyOccupied'
+}
+
+export enum TaxStatus {
+  Paid = 'Paid',
+  Unpaid = 'Unpaid',
+  PartiallyPaid = 'PartiallyPaid',
+  Exempted = 'Exempted'
+}
+
+export enum ValidationStatus {
+  Pending = 'Pending',
+  Validated = 'Validated',
+  Rejected = 'Rejected'
+}
+
+export enum SyncStatus {
+  Local = 'Local',
+  Synced = 'Synced',
+  PendingSync = 'PendingSync',
+  SyncFailed = 'SyncFailed'
+}
+
+// Types
+export interface CoOwner {
+  name: string;
+  nationalId: string;
+  phoneNumber: string;
+  ownershipPercentage: number;
+}
+
+export interface DataModification {
+  timestamp: string;
+  field: string;
+  oldValue: any;
+  newValue: any;
+  modifiedBy: string;
+}
+
+export interface BillingRecord {
+  billId: string;
+  amount: number;
+  dueDate: string;
+  status: TaxStatus;
+  paymentDate?: string;
+  paymentMethod?: string;
+}
+
+export interface OwnerComplaint {
+  complaintId: string;
+  timestamp: string;
+  category: string;
+  description: string;
+  status: string;
+  resolution?: string;
+}
+
+export interface PropertySegment {
+  segmentId: string;
+  category: string;
+  value: number;
+  characteristics: string[];
+}
+
+export interface GeospatialData {
+  dataId: string;
+  timestamp: string;
+  type: string;
+  coordinates: {
+    latitude: number;
+    longitude: number;
+    altitude?: number;
+  };
+  metadata: Record<string, any>;
+}
+
+export interface Facility{
   propertyId: string;
   ownerName: string;
   nationalIdentificationNumber: string;
@@ -11,32 +105,48 @@ export interface PropertyRecord {
   gpsAltitude?: number;
   gpsPrecision?: number;
   geocodedAddress: string;
-  propertyType: 'Residential' | 'Commercial' | 'Industrial' | 'Agricultural' | 'Mixed Use' | 'Undeveloped';
-  propertySize: number; // in square meters
+  region: string;
+
+  propertyType: PropertyType;
+  propertySize: number;
   propertyValue?: number;
-  developmentStatus: 'Developed' | 'Undeveloped' | 'Partially Developed';
+  propertyValueRange?: string;
+  developmentStatus: DevelopmentStatus;
   businessOperated?: string;
   businessType?: string;
-  occupancyStatus: 'Occupied' | 'Vacant' | 'Partially Occupied';
+  occupancyStatus: OccupancyStatus;
   numberOfUnits?: number;
-  region: string;
-  lga: string;
-  ward: string;
   multipleOwnership: boolean;
-  coOwners?: { name: string; contact: string; share: number }[];
+  coOwners?: CoOwner[];
+
   taxLevyCategory: string;
   taxLevyAmount: number;
-  taxStatus: 'Paid' | 'Unpaid' | 'Partially Paid' | 'Exempt';
-  dateOfEnumeration: string;
-  timeOfEnumeration: string;
+  taxStatus: TaxStatus;
+  marketValueAssessment: number;
+  annualRate: number;
+  reliefRate: number;
   imageOfProperty: string;
   ownerSignature?: string;
-  dataValidationStatus: 'Pending' | 'Validated' | 'Rejected';
-  dataModificationHistory?: { date: string; user: string; changes: string }[];
-  billingHistory?: { date: string; amount: number; status: string }[];
-  ownerComplaintsFeedback?: { date: string; complaint: string; status: string }[];
-  propertySegmentationData?: { segment: string; probability: number }[];
-  geospatialAnalysisData?: { type: string; coordinates: number[] }[];
+  dataValidationStatus: ValidationStatus;
+  dataModificationHistory?: DataModification[];
+  billingHistory?: BillingRecord[];
+  ownerComplaintsFeedback?: OwnerComplaint[];
+  propertySegmentationData?: PropertySegment[];
+  geospatialAnalysisData?: GeospatialData[];
+}
+
+export interface CustomerState {
+    streetName: string;
+    lga: string;
+    ward: string;
+    longitude: number;
+    latitude: number;
+    altitude: number;
+    facilities?: Facility[];
+    dateOfEnumeration: string;
+    timeOfEnumeration: string;
+    syncStatus: SyncStatus;
+    
 }
 
 export interface User {

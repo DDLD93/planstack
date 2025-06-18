@@ -28,6 +28,7 @@ import {
   Activity,
   Laptop,
 } from "lucide-react";
+import { ValidationStatus } from "../types";
 
 // Define the EnumeratorStats type
 interface EnumeratorStats {
@@ -89,9 +90,9 @@ const mockData = {
   ],
   
   validationStatus: [
-    { name: "Validated", value: 94, color: "#22C55E" },
-    { name: "Pending", value: 5, color: "#F59E0B" },
-    { name: "Rejected", value: 1, color: "#EF4444" },
+    { name: ValidationStatus.Validated, value: 94, color: "#22C55E" },
+    { name: ValidationStatus.Pending, value: 5, color: "#F59E0B" },
+    { name: ValidationStatus.Rejected, value: 1, color: "#EF4444" },
   ],
   
   averageTimePerProperty: [

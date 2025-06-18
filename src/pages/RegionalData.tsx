@@ -72,7 +72,6 @@ const mockData = {
       commercial: 1800,
       industrial: 300,
       agricultural: 100,
-      undeveloped: 300,
     },
     { 
       region: "Jos South", 
@@ -80,7 +79,6 @@ const mockData = {
       commercial: 1200,
       industrial: 400,
       agricultural: 200,
-      undeveloped: 600,
     },
     { 
       region: "Mangu", 
@@ -88,7 +86,6 @@ const mockData = {
       commercial: 400,
       industrial: 150,
       agricultural: 550,
-      undeveloped: 200,
     },
     { 
       region: "Barkin Ladi", 
@@ -96,7 +93,6 @@ const mockData = {
       commercial: 350,
       industrial: 100,
       agricultural: 450,
-      undeveloped: 100,
     },
     { 
       region: "Bokkos", 
@@ -104,7 +100,6 @@ const mockData = {
       commercial: 250,
       industrial: 50,
       agricultural: 350,
-      undeveloped: 50,
     },
   ],
   
@@ -286,7 +281,6 @@ const RegionalData = () => {
     Commercial: item.commercial,
     Industrial: item.industrial,
     Agricultural: item.agricultural,
-    Undeveloped: item.undeveloped,
   }));
 
   return (
@@ -414,7 +408,6 @@ const RegionalData = () => {
                 <Bar dataKey="Commercial" stackId="a" fill="#10B981" name="Commercial" />
                 <Bar dataKey="Industrial" stackId="a" fill="#F59E0B" name="Industrial" />
                 <Bar dataKey="Agricultural" stackId="a" fill="#8B5CF6" name="Agricultural" />
-                <Bar dataKey="Undeveloped" stackId="a" fill="#EC4899" name="Undeveloped" />
               </BarChart>
             </ResponsiveContainer>
           </div>

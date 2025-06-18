@@ -21,7 +21,7 @@ import {
   DollarSign,
   FileText,
   MapPin,
-  PieChartIcon,
+  PieChart as PieChartIcon,
   BarChart3,
   Activity,
   Users,
@@ -38,20 +38,12 @@ import {
   Info,
   Mountain,
 } from "lucide-react";
+import { DevelopmentStatus, Facility, OccupancyStatus, PropertyType, TaxStatus, ValidationStatus } from "../types";
 
 // Property data interface
-interface PropertyMetric {
-  ownerName: string;
-  propertyId: string;
-  lat: number;
-  lng: number;
-  propertyType: string;
-  propertySize: number;
-  taxStatus: string;
-  region: string;
+interface DashboardLocationPoint extends Facility {
   lga: string;
   ward: string;
-  evaluationPrice: number;
 }
 
 // Mock dashboard overview data
@@ -63,17 +55,17 @@ const dashboardData = {
   totalEvaluationPrice: 972000000000,
   
   propertyTypeDistribution: [
-    { name: "Residential", value: 14000, color: "#3B82F6" },
-    { name: "Commercial", value: 4500, color: "#10B981" },
-    { name: "Industrial", value: 1000, color: "#F59E0B" },
-    { name: "Agricultural", value: 1000, color: "#6366F1" },
-    { name: "Mixed Use", value: 500, color: "#EC4899" },
+    { name: PropertyType.Residential, value: 14000, color: "#3B82F6" },
+    { name: PropertyType.Commercial, value: 4500, color: "#10B981" },
+    { name: PropertyType.Industrial, value: 1000, color: "#F59E0B" },
+    { name: PropertyType.Agricultural, value: 1000, color: "#6366F1" },
+    { name: PropertyType.Mixed, value: 500, color: "#EC4899" },
   ],
   
   developmentStatus: [
-    { name: "Developed", value: 16000, color: "#22C55E" },
-    { name: "Undeveloped", value: 3000, color: "#F97316" },
-    { name: "Partially Developed", value: 2000, color: "#06B6D4" },
+    { name: DevelopmentStatus.Developed, value: 16000, color: "#22C55E" },
+    { name: DevelopmentStatus.Undeveloped, value: 3000, color: "#F97316" },
+    { name: DevelopmentStatus.UnderDevelopment, value: 2000, color: "#06B6D4" },
   ],
   
   regionBreakdown: [
@@ -117,649 +109,395 @@ const dashboardData = {
 };
 
 // Comprehensive property location data
-const locationPoints: PropertyMetric[] = [
+const locationPoints: DashboardLocationPoint[] = [
   {
-    ownerName: "John Adamu",
     propertyId: "JN-12345",
-    lat: 9.9188,
-    lng: 8.8942,
-    propertyType: "Residential",
-    propertySize: 850,
-    taxStatus: "Paid",
+    ownerName: "John Adamu",
+    nationalIdentificationNumber: "1234567890",
+    phoneNumber1: "08012345678",
+    physicalAddress: "123 University of Jos Road",
+    gpsLatitude: 9.9188,
+    gpsLongitude: 8.8942,
+    geocodedAddress: "University of Jos, Jos, Plateau State",
     region: "Northern",
+    propertyType: PropertyType.Residential,
+    propertySize: 850,
+    developmentStatus: DevelopmentStatus.Developed,
+    occupancyStatus: OccupancyStatus.Occupied,
+    multipleOwnership: false,
+    taxLevyCategory: "A",
+    taxLevyAmount: 50000,
+    taxStatus: TaxStatus.Paid,
+    marketValueAssessment: 25000000,
+    annualRate: 0.05,
+    reliefRate: 0,
+    imageOfProperty: "https://via.placeholder.com/150",
+    dataValidationStatus: ValidationStatus.Validated,
     lga: "Jos North",
     ward: "Naraguta",
-    evaluationPrice: 25000000,
   },
   {
-    ownerName: "Sarah Ibrahim",
     propertyId: "JS-67890",
-    lat: 9.8943,
-    lng: 8.8806,
-    propertyType: "Commercial",
-    propertySize: 1200,
-    taxStatus: "Paid",
+    ownerName: "Sarah Ibrahim",
+    nationalIdentificationNumber: "0987654321",
+    phoneNumber1: "08098765432",
+    physicalAddress: "456 Bukuru Expressway",
+    gpsLatitude: 9.8943,
+    gpsLongitude: 8.8806,
+    geocodedAddress: "Bukuru, Jos South, Plateau State",
     region: "Southern",
+    propertyType: PropertyType.Commercial,
+    propertySize: 1200,
+    developmentStatus: DevelopmentStatus.Developed,
+    occupancyStatus: OccupancyStatus.Occupied,
+    multipleOwnership: true,
+    taxLevyCategory: "B",
+    taxLevyAmount: 150000,
+    taxStatus: TaxStatus.Paid,
+    marketValueAssessment: 45000000,
+    annualRate: 0.07,
+    reliefRate: 0,
+    imageOfProperty: "https://via.placeholder.com/150",
+    dataValidationStatus: ValidationStatus.Validated,
     lga: "Jos South",
     ward: "Bukuru",
-    evaluationPrice: 45000000,
   },
   {
-    ownerName: "Michael Okonkwo",
     propertyId: "MG-23456",
-    lat: 9.5292,
-    lng: 9.0089,
-    propertyType: "Residential",
-    propertySize: 620,
-    taxStatus: "Pending",
+    ownerName: "Michael Okonkwo",
+    nationalIdentificationNumber: "1122334455",
+    phoneNumber1: "08011223344",
+    physicalAddress: "789 Mangu Halle",
+    gpsLatitude: 9.5292,
+    gpsLongitude: 9.0089,
+    geocodedAddress: "Mangu, Plateau State",
     region: "Central",
+    propertyType: PropertyType.Residential,
+    propertySize: 620,
+    developmentStatus: DevelopmentStatus.Developed,
+    occupancyStatus: OccupancyStatus.Occupied,
+    multipleOwnership: false,
+    taxLevyCategory: "A",
+    taxLevyAmount: 40000,
+    taxStatus: TaxStatus.Unpaid,
+    marketValueAssessment: 18500000,
+    annualRate: 0.05,
+    reliefRate: 0,
+    imageOfProperty: "https://via.placeholder.com/150",
+    dataValidationStatus: ValidationStatus.Pending,
     lga: "Mangu",
     ward: "Mangu Central",
-    evaluationPrice: 18500000,
   },
   {
-    ownerName: "Elizabeth Danladi",
     propertyId: "BL-34567",
-    lat: 9.5333,
-    lng: 8.9,
-    propertyType: "Agricultural",
-    propertySize: 5000,
-    taxStatus: "Paid",
+    ownerName: "Elizabeth Danladi",
+    nationalIdentificationNumber: "6677889900",
+    phoneNumber1: "08066778899",
+    physicalAddress: "101 Barakin Ladi Farms",
+    gpsLatitude: 9.5333,
+    gpsLongitude: 8.9,
+    geocodedAddress: "Barkin Ladi, Plateau State",
     region: "Western",
+    propertyType: PropertyType.Agricultural,
+    propertySize: 5000,
+    developmentStatus: DevelopmentStatus.Developed,
+    occupancyStatus: OccupancyStatus.Occupied,
+    multipleOwnership: false,
+    taxLevyCategory: "C",
+    taxLevyAmount: 20000,
+    taxStatus: TaxStatus.Paid,
+    marketValueAssessment: 32000000,
+    annualRate: 0.03,
+    reliefRate: 0.1,
+    imageOfProperty: "https://via.placeholder.com/150",
+    dataValidationStatus: ValidationStatus.Validated,
     lga: "Barkin Ladi",
     ward: "Barkin Ladi",
-    evaluationPrice: 32000000,
   },
   {
-    ownerName: "Emmanuel Joseph",
     propertyId: "BK-45678",
-    lat: 9.3,
-    lng: 9.0,
-    propertyType: "Mixed Use",
-    propertySize: 1500,
-    taxStatus: "Overdue",
+    ownerName: "Emmanuel Joseph",
+    nationalIdentificationNumber: "1231231231",
+    phoneNumber1: "08012312312",
+    physicalAddress: "234 Bokkos Market Road",
+    gpsLatitude: 9.3,
+    gpsLongitude: 9.0,
+    geocodedAddress: "Bokkos, Plateau State",
     region: "Eastern",
+    propertyType: PropertyType.Mixed,
+    propertySize: 1500,
+    developmentStatus: DevelopmentStatus.Developed,
+    occupancyStatus: OccupancyStatus.PartiallyOccupied,
+    multipleOwnership: false,
+    taxLevyCategory: "B",
+    taxLevyAmount: 75000,
+    taxStatus: TaxStatus.Unpaid,
+    marketValueAssessment: 28000000,
+    annualRate: 0.06,
+    reliefRate: 0,
+    imageOfProperty: "https://via.placeholder.com/150",
+    dataValidationStatus: ValidationStatus.Validated,
     lga: "Bokkos",
     ward: "Bokkos Central",
-    evaluationPrice: 28000000,
-  },
-  {
-    ownerName: "Patricia Lar",
-    propertyId: "JN-56789",
-    lat: 9.9288,
-    lng: 8.9042,
-    propertyType: "Commercial",
-    propertySize: 1800,
-    taxStatus: "Paid",
-    region: "Northern",
-    lga: "Jos North",
-    ward: "Jenta Adamu",
-    evaluationPrice: 52000000,
-  },
-  {
-    ownerName: "David Ahmed",
-    propertyId: "JN-67890",
-    lat: 9.9388,
-    lng: 8.8842,
-    propertyType: "Residential",
-    propertySize: 750,
-    taxStatus: "Pending",
-    region: "Northern",
-    lga: "Jos North",
-    ward: "Jenta Mangoro",
-    evaluationPrice: 21000000,
-  },
-  {
-    ownerName: "Grace Emmanuel",
-    propertyId: "JN-78901",
-    lat: 9.9088,
-    lng: 8.8742,
-    propertyType: "Residential",
-    propertySize: 680,
-    taxStatus: "Paid",
-    region: "Northern",
-    lga: "Jos North",
-    ward: "Apata",
-    evaluationPrice: 19500000,
-  },
-  {
-    ownerName: "Peter Musa",
-    propertyId: "JN-89012",
-    lat: 9.8988,
-    lng: 8.9142,
-    propertyType: "Industrial",
-    propertySize: 3200,
-    taxStatus: "Overdue",
-    region: "Northern",
-    lga: "Jos North",
-    ward: "Laranto",
-    evaluationPrice: 85000000,
-  },
-  {
-    ownerName: "Fatima Bello",
-    propertyId: "JS-90123",
-    lat: 9.8843,
-    lng: 8.8706,
-    propertyType: "Commercial",
-    propertySize: 1400,
-    taxStatus: "Paid",
-    region: "Southern",
-    lga: "Jos South",
-    ward: "Gyel",
-    evaluationPrice: 48000000,
-  },
-  {
-    ownerName: "James Yakubu",
-    propertyId: "JS-01234",
-    lat: 9.8743,
-    lng: 8.8906,
-    propertyType: "Residential",
-    propertySize: 550,
-    taxStatus: "Exempt",
-    region: "Southern",
-    lga: "Jos South",
-    ward: "Vwang",
-    evaluationPrice: 16500000,
-  },
-  {
-    ownerName: "Mary Dung",
-    propertyId: "JS-34567",
-    lat: 9.9043,
-    lng: 8.9006,
-    propertyType: "Mixed Use",
-    propertySize: 1250,
-    taxStatus: "Paid",
-    region: "Southern",
-    lga: "Jos South",
-    ward: "Du",
-    evaluationPrice: 35000000,
-  },
-  {
-    ownerName: "Paul Gyang",
-    propertyId: "JS-45678",
-    lat: 9.9143,
-    lng: 8.8606,
-    propertyType: "Agricultural",
-    propertySize: 7500,
-    taxStatus: "Pending",
-    region: "Southern",
-    lga: "Jos South",
-    ward: "Kuru",
-    evaluationPrice: 42000000,
   },
 ];
 
-// Recent activity data
-const recentActivity = [
-  { id: 1, action: "Property Enumerated", location: "Jos North", timestamp: "Today, 10:45 AM" },
-  { id: 2, action: "Tax Payment Received", location: "Jos South", timestamp: "Today, 09:30 AM" },
-  { id: 3, action: "Property Validation", location: "Mangu", timestamp: "Yesterday, 03:15 PM" },
-  { id: 4, action: "Ownership Transfer", location: "Barkin Ladi", timestamp: "Yesterday, 11:20 AM" },
-  { id: 5, action: "Property Enumerated", location: "Bokkos", timestamp: "2 days ago, 02:45 PM" },
-];
-
-// Define the map container style
-const mapContainerStyle = {
-  width: "100%",
-  height: "500px", // Increased height for better visibility
-};
-
-// Define the default center (Plateau State coordinates)
-const center = {
-  lat: 9.8965,
-  lng: 8.8583,
-};
-
-// Define libraries for Google Maps
-const libraries: Libraries = ["visualization"];
-
-// StatCard Component
 const StatCard = ({ title, value, icon }: { title: string; value: string | number; icon: React.ReactNode }) => (
-  <div className="bg-white rounded-lg shadow p-4 flex flex-col">
-    <div className="flex items-center justify-between mb-2">
+  <div className="bg-white p-4 rounded-lg shadow-md flex items-center">
+    <div className="p-3 bg-gray-100 rounded-full mr-4">{icon}</div>
+    <div>
       <h3 className="text-gray-500 text-sm font-medium">{title}</h3>
-      <div className="p-2 bg-blue-50 text-blue-600 rounded-lg">{icon}</div>
+      <p className="text-2xl font-bold">
+        {typeof value === 'number' ? value.toLocaleString() : value}
+      </p>
     </div>
-    <p className="text-2xl font-bold">{typeof value === 'number' ? value.toLocaleString() : value}</p>
   </div>
 );
 
-// Dashboard Component
 const Dashboard = () => {
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: import.meta.env.REACT_APP_GOOGLE_MAPS_API_KEY || "",
-    libraries,
+    libraries: ["visualization"] as Libraries,
   });
 
-  const [selectedLocation, setSelectedLocation] = useState<PropertyMetric | null>(null);
-  const [showStreetView, setShowStreetView] = useState(false);
-  const [mapType, setMapType] = useState("roadmap"); // Use string instead of google.maps.MapTypeId
+  const [selectedPoint, setSelectedPoint] = useState<DashboardLocationPoint | null>(null);
+  const [hoveredPoint, setHoveredPoint] = useState<DashboardLocationPoint | null>(null);
 
-  // Get marker color based on property type
-  const getMarkerColor = (propertyType: string) => {
-    switch (propertyType) {
-      case "Residential": return "#3B82F6"; // blue
-      case "Commercial": return "#10B981"; // green
-      case "Industrial": return "#F59E0B"; // amber
-      case "Agricultural": return "#6366F1"; // indigo
-      case "Mixed Use": return "#EC4899"; // pink
-      default: return "#3B82F6"; // blue default
-    }
-  };
+  const mapRef = useRef<google.maps.Map | null>(null);
 
-  // Get marker icon based on tax status - only called when map is loaded
-  const getMarkerIcon = useCallback((property: PropertyMetric) => {
-    if (!isLoaded) return undefined; // Return undefined instead of null
-    
-    const color = getMarkerColor(property.propertyType);
-    return {
-      path: google.maps.SymbolPath.CIRCLE,
-      fillColor: color,
-      fillOpacity: 0.8,
-      strokeWeight: 1,
-      strokeColor: "#FFFFFF",
-      scale: 10 + (property.propertySize / 1000), // Size based on property size
-    };
-  }, [isLoaded]);
-
-  // Get status color
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "Paid": return "bg-green-100 text-green-800";
-      case "Pending": return "bg-yellow-100 text-yellow-800";
-      case "Overdue": return "bg-red-100 text-red-800";
-      case "Exempt": return "bg-blue-100 text-blue-800";
-      default: return "bg-gray-100 text-gray-800";
-    }
-  };
-
-  // Get status icon
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case "Paid": return <Check className="w-4 h-4" />;
-      case "Pending": return <Clock className="w-4 h-4" />;
-      case "Overdue": return <XCircle className="w-4 h-4" />;
-      case "Exempt": return <Shield className="w-4 h-4" />;
-      default: return <Info className="w-4 h-4" />;
-    }
-  };
-
-  // Toggle street view
-  const toggleStreetView = useCallback(() => {
-    setShowStreetView(!showStreetView);
-  }, [showStreetView]);
-
-  // Change map type - using string values
-  const changeMapType = useCallback((type: string) => {
-    setMapType(type);
+  const onMapLoad = useCallback((map: google.maps.Map) => {
+    mapRef.current = map;
   }, []);
 
-  return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-6">Lands and Survey Dashboard</h1>
+  const getMarkerColor = (propertyType: PropertyType) => {
+    switch (propertyType) {
+      case PropertyType.Residential:
+        return "#3B82F6"; // Blue
+      case PropertyType.Commercial:
+        return "#10B981"; // Green
+      case PropertyType.Industrial:
+        return "#F59E0B"; // Amber
+      case PropertyType.Agricultural:
+        return "#8B5CF6"; // Violet
+      case PropertyType.Mixed:
+        return "#EC4899"; // Pink
+      default:
+        return "#6B7280"; // Gray
+    }
+  };
 
-      {/* Key Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <StatCard
-          title="Total Properties"
-          value={dashboardData.totalProperties}
-          icon={<Building className="w-5 h-5" />}
-        />
-        <StatCard
-          title="Total Revenue"
-          value={`₦${dashboardData.totalRevenue.toLocaleString()}`}
-          icon={<DollarSign className="w-5 h-5" />}
-        />
-        <StatCard
-          title="Total Evaluation"
-          value={`₦${dashboardData.totalEvaluationPrice.toLocaleString()}`}
-          icon={<FileText className="w-5 h-5" />}
-        />
-        <StatCard
-          title="Regions Covered"
-          value={dashboardData.totalRegions}
-          icon={<MapPin className="w-5 h-5" />}
-        />
+  const getStatusColor = (status: TaxStatus) => {
+    switch (status) {
+      case TaxStatus.Paid:
+        return "text-green-500";
+      case TaxStatus.Unpaid:
+        return "text-red-500";
+      case TaxStatus.PartiallyPaid:
+        return "text-yellow-500";
+      case TaxStatus.Exempted:
+        return "text-blue-500";
+      default:
+        return "text-gray-500";
+    }
+  };
+
+  const getStatusIcon = (status: TaxStatus) => {
+    switch (status) {
+      case TaxStatus.Paid:
+        return <Check size={16} />;
+      case TaxStatus.Unpaid:
+        return <XCircle size={16} />;
+      case TaxStatus.PartiallyPaid:
+        return <Clock size={16} />;
+      case TaxStatus.Exempted:
+        return <Shield size={16} />;
+      default:
+        return <Info size={16} />;
+    }
+  };
+
+  if (loadError) return <div>Error loading maps</div>;
+  if (!isLoaded) return <div className="flex items-center justify-center h-screen">Loading...</div>;
+
+  return (
+    <div className="container mx-auto p-6 bg-gray-50">
+      <h1 className="text-3xl font-bold mb-6">Plateau State Property Dashboard</h1>
+      
+      {/* Overview Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
+        <StatCard title="Total Properties" value={dashboardData.totalProperties} icon={<Home className="text-blue-500" />} />
+        <StatCard title="Total Revenue (Est.)" value={`₦${(dashboardData.totalRevenue / 1000000).toFixed(1)}M`} icon={<DollarSign className="text-green-500" />} />
+        <StatCard title="Total LGAs" value={dashboardData.totalRegions} icon={<Mountain className="text-yellow-500" />} />
+        <StatCard title="Pending Validations" value={dashboardData.pendingValidations} icon={<FileText className="text-red-500" />} />
+        <StatCard title="Total Assessed Value" value={`₦${(dashboardData.totalEvaluationPrice / 1000000000).toFixed(1)}B`} icon={<BarChart3 className="text-purple-500" />} />
       </div>
 
-      {/* Property Map */}
-      <div className="bg-white rounded-lg shadow p-4 mb-8">
-        <h2 className="text-lg font-semibold mb-4 flex items-center">
-          <MapPin className="w-5 h-5 mr-2 text-red-500" />
-          Property Distribution Map
-        </h2>
-        <div className="mb-4 flex flex-wrap gap-2">
-          <button 
-            onClick={() => changeMapType("roadmap")}
-            className={`px-3 py-1 rounded-md text-sm flex items-center gap-1 ${mapType === "roadmap" ? 'bg-blue-500 text-white' : 'bg-gray-100'}`}
-          >
-            <Map className="w-4 h-4" /> Road
-          </button>
-          <button 
-            onClick={() => changeMapType("satellite")}
-            className={`px-3 py-1 rounded-md text-sm flex items-center gap-1 ${mapType === "satellite" ? 'bg-blue-500 text-white' : 'bg-gray-100'}`}
-          >
-            <Layers className="w-4 h-4" /> Satellite
-          </button>
-          <button 
-            onClick={() => changeMapType("hybrid")}
-            className={`px-3 py-1 rounded-md text-sm flex items-center gap-1 ${mapType === "hybrid" ? 'bg-blue-500 text-white' : 'bg-gray-100'}`}
-          >
-            <Layers className="w-4 h-4" /> Hybrid
-          </button>
-          <button 
-            onClick={() => changeMapType("terrain")}
-            className={`px-3 py-1 rounded-md text-sm flex items-center gap-1 ${mapType === "terrain" ? 'bg-blue-500 text-white' : 'bg-gray-100'}`}
-          >
-            <Mountain className="w-4 h-4" /> Terrain
-          </button>
-        </div>
-        {loadError && <div>Error loading maps</div>}
-        {!isLoaded ? (
-          <div className="flex justify-center items-center h-80">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
-          </div>
-        ) : (
-          <div className="relative rounded-lg overflow-hidden border border-gray-200">
+      {/* Main Content */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Map and Property Details */}
+        <div className="lg:col-span-2 bg-white p-6 rounded-lg shadow-md">
+          <h2 className="text-xl font-semibold mb-4 flex items-center">
+            <MapPin className="mr-2 text-blue-500" />
+            Live Property Map
+          </h2>
+          <div className="h-[600px] w-full mb-4">
             <GoogleMap
-              mapContainerStyle={mapContainerStyle}
-              zoom={12}
-              center={center}
-              mapTypeId={mapType}
+              mapContainerStyle={{ width: '100%', height: '100%' }}
+              center={{ lat: 9.8965, lng: 8.8583 }}
+              zoom={10}
+              onLoad={onMapLoad}
               options={{
-                streetViewControl: true,
-                mapTypeControl: false, // We're using our custom controls
-                fullscreenControl: true,
-                zoomControl: true,
-                styles: [
-                  {
-                    featureType: "administrative",
-                    elementType: "geometry",
-                    stylers: [{ visibility: "on" }],
-                  },
-                  {
-                    featureType: "poi",
-                    stylers: [{ visibility: "on" }],
-                  },
-                ],
+                streetViewControl: false,
+                mapTypeControl: false,
+                fullscreenControl: false,
               }}
             >
-              {showStreetView && selectedLocation ? (
-                <StreetViewPanorama
-                  options={{
-                    position: { lat: selectedLocation.lat, lng: selectedLocation.lng },
-                    enableCloseButton: true,
-                    addressControl: true,
-                    visible: true
+              {locationPoints.map((point) => (
+                <Marker
+                  key={point.propertyId}
+                  position={{ lat: point.gpsLatitude, lng: point.gpsLongitude }}
+                  onClick={() => setSelectedPoint(point)}
+                  onMouseOver={() => setHoveredPoint(point)}
+                  onMouseOut={() => setHoveredPoint(null)}
+                  icon={{
+                    path: google.maps.SymbolPath.CIRCLE,
+                    fillColor: getMarkerColor(point.propertyType),
+                    fillOpacity: 0.8,
+                    strokeColor: "white",
+                    strokeWeight: 1.5,
+                    scale: 8,
                   }}
-                  onCloseclick={() => setShowStreetView(false)}
                 />
-              ) : (
-                <>
-                  {locationPoints.map((property, index) => (
-                    <Marker
-                      key={index}
-                      position={{ lat: property.lat, lng: property.lng }}
-                      onClick={() => {
-                        setSelectedLocation(property);
-                        setShowStreetView(false);
-                      }}
-                      icon={isLoaded ? getMarkerIcon(property) : undefined}
-                      title={property.propertyId}
-                    />
-                  ))}
-                </>
-              )}
-
-              {selectedLocation && !showStreetView && (
+              ))}
+              {selectedPoint && (
                 <InfoWindow
-                  position={{ lat: selectedLocation.lat, lng: selectedLocation.lng }}
-                  onCloseClick={() => setSelectedLocation(null)}
+                  position={{ lat: selectedPoint.gpsLatitude, lng: selectedPoint.gpsLongitude }}
+                  onCloseClick={() => setSelectedPoint(null)}
                 >
-                  <div className="p-2 w-72 max-w-sm">
-                    <div className="flex justify-between items-start mb-2">
-                      <h3 className="font-semibold text-gray-900 text-lg">{selectedLocation.propertyId}</h3>
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1 ${getStatusColor(selectedLocation.taxStatus)}`}>
-                        {getStatusIcon(selectedLocation.taxStatus)}
-                        {selectedLocation.taxStatus}
-                      </span>
+                  <div className="p-2 w-64">
+                    <h3 className="font-bold text-lg mb-2">{selectedPoint.ownerName}</h3>
+                    <p className="text-sm">
+                      <strong className="font-semibold">ID:</strong> {selectedPoint.propertyId}
+                    </p>
+                    <p className="text-sm">
+                      <strong className="font-semibold">Type:</strong> {selectedPoint.propertyType}
+                    </p>
+                    <p className="text-sm">
+                      <strong className="font-semibold">Size:</strong> {selectedPoint.propertySize} sqm
+                    </p>
+                    <div className={`flex items-center text-sm ${getStatusColor(selectedPoint.taxStatus)}`}>
+                      <strong className="font-semibold mr-1">Status:</strong>
+                      {getStatusIcon(selectedPoint.taxStatus)}
+                      <span className="ml-1">{selectedPoint.taxStatus}</span>
                     </div>
-                    
-                    <div className="grid grid-cols-2 gap-2 mb-3">
-                      <div className="flex flex-col">
-                        <span className="text-xs text-gray-500">Owner</span>
-                        <span className="text-sm font-medium flex items-center gap-1">
-                          <User className="w-3 h-3" />
-                          {selectedLocation.ownerName}
-                        </span>
-                      </div>
-                      <div className="flex flex-col">
-                        <span className="text-xs text-gray-500">Type</span>
-                        <span className="text-sm font-medium">{selectedLocation.propertyType}</span>
-                      </div>
-                      <div className="flex flex-col">
-                        <span className="text-xs text-gray-500">Size</span>
-                        <span className="text-sm font-medium">{selectedLocation.propertySize} m²</span>
-                      </div>
-                      <div className="flex flex-col">
-                        <span className="text-xs text-gray-500">Value</span>
-                        <span className="text-sm font-medium">₦{selectedLocation.evaluationPrice.toLocaleString()}</span>
-                      </div>
-                    </div>
-                    
-                    <div className="bg-gray-50 p-2 rounded-md mb-3">
-                      <div className="text-xs text-gray-500 mb-1">Location</div>
-                      <div className="text-sm">
-                        {selectedLocation.ward}, {selectedLocation.lga}, {selectedLocation.region} Region
-                      </div>
-                    </div>
-                    
-                    <div className="flex gap-2">
-                      <button 
-                        onClick={toggleStreetView}
-                        className="flex-1 bg-blue-500 text-white px-3 py-1 rounded-md text-sm flex items-center justify-center gap-1"
-                      >
-                        <Eye className="w-4 h-4" /> Street View
-                      </button>
-                      <button 
-                        className="flex-1 bg-gray-100 px-3 py-1 rounded-md text-sm flex items-center justify-center gap-1"
-                        onClick={() => window.open(`/properties/${selectedLocation.propertyId}`, '_blank')}
-                      >
-                        <FileText className="w-4 h-4" /> Details
-                      </button>
-                    </div>
+                    <button
+                      className="mt-2 w-full bg-blue-500 text-white py-1 rounded text-sm hover:bg-blue-600"
+                      onClick={() => alert(`Viewing details for ${selectedPoint.propertyId}`)}
+                    >
+                      View Details
+                    </button>
+                  </div>
+                </InfoWindow>
+              )}
+              {hoveredPoint && !selectedPoint && (
+                <InfoWindow
+                  position={{ lat: hoveredPoint.gpsLatitude, lng: hoveredPoint.gpsLongitude }}
+                >
+                  <div className="p-1">
+                    <p className="text-sm font-semibold">{hoveredPoint.ownerName}</p>
+                    <p className="text-xs">{hoveredPoint.propertyType}</p>
                   </div>
                 </InfoWindow>
               )}
             </GoogleMap>
-            
-            <div className="absolute bottom-4 left-4 bg-white p-2 rounded-md shadow-md z-10">
-              <div className="text-xs text-gray-500 mb-1">Property Types</div>
-              <div className="grid grid-cols-2 gap-x-4 gap-y-1">
-                <div className="flex items-center gap-1">
-                  <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-                  <span className="text-xs">Residential</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                  <span className="text-xs">Commercial</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <div className="w-3 h-3 rounded-full bg-amber-500"></div>
-                  <span className="text-xs">Industrial</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <div className="w-3 h-3 rounded-full bg-indigo-500"></div>
-                  <span className="text-xs">Agricultural</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <div className="w-3 h-3 rounded-full bg-pink-500"></div>
-                  <span className="text-xs">Mixed Use</span>
-                </div>
-              </div>
-            </div>
           </div>
-        )}
-      </div>
+        </div>
 
-      {/* Charts Row 1 */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-        {/* Property Type Distribution */}
-        <div className="bg-white rounded-lg shadow p-4">
-          <h2 className="text-lg font-semibold mb-4 flex items-center">
-            <PieChartIcon className="w-5 h-5 mr-2 text-blue-500" />
-            Property Type Distribution
-          </h2>
-          <div className="h-80">
-            <ResponsiveContainer width="100%" height="100%">
+        {/* Charts and Key Metrics */}
+        <div className="space-y-8">
+          <div className="bg-white p-6 rounded-lg shadow-md">
+            <h2 className="text-xl font-semibold mb-4 flex items-center">
+              <PieChartIcon className="mr-2 text-green-500" />
+              Property Type
+            </h2>
+            <ResponsiveContainer width="100%" height={250}>
               <PieChart>
                 <Pie
                   data={dashboardData.propertyTypeDistribution}
                   cx="50%"
                   cy="50%"
-                  labelLine={true}
-                  label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                  outerRadius={100}
+                  labelLine={false}
+                  outerRadius={80}
                   fill="#8884d8"
                   dataKey="value"
+                  nameKey="name"
+                  label={({ name, percent }) => `${(percent * 100).toFixed(0)}%`}
                 >
                   {dashboardData.propertyTypeDistribution.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
-                <Tooltip formatter={(value) => value.toLocaleString()} />
-                <Legend />
+                <Tooltip />
+                <Legend iconSize={10} />
               </PieChart>
             </ResponsiveContainer>
           </div>
-        </div>
-
-        {/* Development Status */}
-        <div className="bg-white rounded-lg shadow p-4">
-          <h2 className="text-lg font-semibold mb-4 flex items-center">
-            <PieChartIcon className="w-5 h-5 mr-2 text-green-500" />
-            Development Status
-          </h2>
-          <div className="h-80">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={dashboardData.developmentStatus}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={true}
-                  label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                  outerRadius={100}
-                  fill="#8884d8"
-                  dataKey="value"
-                >
+          <div className="bg-white p-6 rounded-lg shadow-md">
+            <h2 className="text-xl font-semibold mb-4 flex items-center">
+              <BarChart3 className="mr-2 text-red-500" />
+              Development Status
+            </h2>
+            <ResponsiveContainer width="100%" height={250}>
+            <BarChart data={dashboardData.developmentStatus} layout="vertical" margin={{ left: 20 }}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis type="number" />
+                <YAxis dataKey="name" type="category" width={100} />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="value" name="Properties" fill="#8884d8">
                   {dashboardData.developmentStatus.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
-                </Pie>
-                <Tooltip formatter={(value) => value.toLocaleString()} />
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-      </div>
-
-      {/* Charts Row 2 */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-        {/* Region Distribution */}
-        <div className="bg-white rounded-lg shadow p-4">
-          <h2 className="text-lg font-semibold mb-4 flex items-center">
-            <BarChart3 className="w-5 h-5 mr-2 text-blue-500" />
-            Properties by Region
-          </h2>
-          <div className="h-80">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={dashboardData.regionBreakdown}
-                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="region" />
-                <YAxis />
-                <Tooltip formatter={(value) => value.toLocaleString()} />
-                <Legend />
-                <Bar dataKey="properties" fill="#3B82F6" name="Number of Properties" />
+                </Bar>
               </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
-
-        {/* Monthly Revenue */}
-        <div className="bg-white rounded-lg shadow p-4">
-          <h2 className="text-lg font-semibold mb-4 flex items-center">
-            <Activity className="w-5 h-5 mr-2 text-green-500" />
+      </div>
+      
+      {/* Additional Charts */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
+        <div className="bg-white p-6 rounded-lg shadow-md">
+          <h2 className="text-xl font-semibold mb-4 flex items-center">
+            <CalendarDays className="mr-2 text-purple-500" />
+            Monthly Enumeration
+          </h2>
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={dashboardData.monthlyEnumerations}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="month" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Line type="monotone" dataKey="count" stroke="#8884d8" strokeWidth={2} name="Properties" />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+        <div className="bg-white p-6 rounded-lg shadow-md">
+          <h2 className="text-xl font-semibold mb-4 flex items-center">
+            <Activity className="mr-2 text-indigo-500" />
             Monthly Revenue
           </h2>
-          <div className="h-80">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart
-                data={dashboardData.revenueByMonth}
-                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="month" />
-                <YAxis tickFormatter={(value) => `₦${(value / 1000000).toFixed(1)}M`} />
-                <Tooltip formatter={(value) => `₦${Number(value).toLocaleString()}`} />
-                <Legend />
-                <Line type="monotone" dataKey="revenue" stroke="#10B981" name="Revenue" strokeWidth={2} />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-      </div>
-
-      {/* Bottom Row */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-        {/* Monthly Enumerations */}
-        <div className="bg-white rounded-lg shadow p-4">
-          <h2 className="text-lg font-semibold mb-4 flex items-center">
-            <CalendarDays className="w-5 h-5 mr-2 text-purple-500" />
-            Monthly Property Enumerations
-          </h2>
-          <div className="h-80">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={dashboardData.monthlyEnumerations}
-                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="month" />
-                <YAxis />
-                <Tooltip formatter={(value) => value.toLocaleString()} />
-                <Legend />
-                <Bar dataKey="count" fill="#8B5CF6" name="Properties Enumerated" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
-        {/* Recent Activity */}
-        <div className="bg-white rounded-lg shadow p-4">
-          <h2 className="text-lg font-semibold mb-4 flex items-center">
-            <Users className="w-5 h-5 mr-2 text-indigo-500" />
-            Recent Activity
-          </h2>
-          <div className="h-80 overflow-y-auto">
-            <div className="space-y-4">
-              {recentActivity.map((activity) => (
-                <div key={activity.id} className="flex items-start gap-2 p-3 border-b border-gray-100">
-                  <div className="p-2 bg-blue-100 text-blue-600 rounded-full">
-                    <Home className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <p className="font-medium">{activity.action}</p>
-                    <p className="text-sm text-gray-500">{activity.location} • {activity.timestamp}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={dashboardData.revenueByMonth}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="month" />
+              <YAxis tickFormatter={(value) => `₦${(value/1000000).toFixed(1)}M`} />
+              <Tooltip formatter={(value: number) => `₦${value.toLocaleString()}`} />
+              <Legend />
+              <Line type="monotone" dataKey="revenue" stroke="#82ca9d" strokeWidth={2} name="Revenue" />
+            </LineChart>
+          </ResponsiveContainer>
         </div>
       </div>
     </div>
