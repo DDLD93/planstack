@@ -231,6 +231,91 @@ const Revenue = () => {
         />
       </div>
 
+      {/* Demand Notice Analytics */}
+      <div className="bg-white rounded-lg shadow p-4 mb-8">
+        <h2 className="text-lg font-semibold mb-4 flex items-center">
+          <AlertTriangle className="w-5 h-5 mr-2 text-red-500" />
+          Demand Notice Analytics
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div>
+            <h3 className="text-md font-semibold mb-2">Demand Notices Issued (Monthly)</h3>
+            <ResponsiveContainer width="100%" height={200}>
+              <BarChart data={[{month: 'Jan', issued: 120, paid: 80, overdue: 20}, {month: 'Feb', issued: 140, paid: 100, overdue: 25}, {month: 'Mar', issued: 160, paid: 110, overdue: 30}]}> {/* Mock data */}
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="month" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="issued" fill="#3B82F6" name="Issued" />
+                <Bar dataKey="paid" fill="#10B981" name="Paid" />
+                <Bar dataKey="overdue" fill="#EF4444" name="Overdue" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+          <div>
+            <h3 className="text-md font-semibold mb-2">Top Debtors</h3>
+            <table className="min-w-full text-sm">
+              <thead>
+                <tr>
+                  <th className="px-2 py-1 text-left">Property ID</th>
+                  <th className="px-2 py-1 text-left">Owner</th>
+                  <th className="px-2 py-1 text-left">Outstanding (₦)</th>
+                </tr>
+              </thead>
+              <tbody>
+                {/* Mock data */}
+                <tr><td className="px-2 py-1">JN-12345</td><td className="px-2 py-1">John Adamu</td><td className="px-2 py-1">50,000</td></tr>
+                <tr><td className="px-2 py-1">JS-54321</td><td className="px-2 py-1">Jane Musa</td><td className="px-2 py-1">120,000</td></tr>
+                <tr><td className="px-2 py-1">MG-67890</td><td className="px-2 py-1">Ali Bello</td><td className="px-2 py-1">80,000</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      {/* Land Use Charge Analytics */}
+      <div className="bg-white rounded-lg shadow p-4 mb-8">
+        <h2 className="text-lg font-semibold mb-4 flex items-center">
+          <BarChart2 className="w-5 h-5 mr-2 text-green-500" />
+          Land Use Charge Analytics
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div>
+            <h3 className="text-md font-semibold mb-2">Charges Levied vs Collected</h3>
+            <ResponsiveContainer width="100%" height={200}>
+              <BarChart data={[{month: 'Jan', levied: 200000, collected: 150000}, {month: 'Feb', levied: 220000, collected: 180000}, {month: 'Mar', levied: 250000, collected: 200000}]}> {/* Mock data */}
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="month" />
+                <YAxis tickFormatter={v => `₦${(v/1000).toFixed(0)}K`} />
+                <Tooltip formatter={v => `₦${v.toLocaleString()}`} />
+                <Legend />
+                <Bar dataKey="levied" fill="#6366F1" name="Levied" />
+                <Bar dataKey="collected" fill="#10B981" name="Collected" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+          <div>
+            <h3 className="text-md font-semibold mb-2">Outstanding Charges</h3>
+            <table className="min-w-full text-sm">
+              <thead>
+                <tr>
+                  <th className="px-2 py-1 text-left">Property ID</th>
+                  <th className="px-2 py-1 text-left">Owner</th>
+                  <th className="px-2 py-1 text-left">Outstanding (₦)</th>
+                </tr>
+              </thead>
+              <tbody>
+                {/* Mock data */}
+                <tr><td className="px-2 py-1">JN-12345</td><td className="px-2 py-1">John Adamu</td><td className="px-2 py-1">30,000</td></tr>
+                <tr><td className="px-2 py-1">JS-54321</td><td className="px-2 py-1">Jane Musa</td><td className="px-2 py-1">70,000</td></tr>
+                <tr><td className="px-2 py-1">MG-67890</td><td className="px-2 py-1">Ali Bello</td><td className="px-2 py-1">40,000</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
         {/* Revenue by Month Trend */}
         <div className="bg-white rounded-lg shadow p-4">

@@ -332,6 +332,65 @@ const Dashboard = () => {
         <StatCard title="Total Assessed Value" value={`₦${(dashboardData.totalEvaluationPrice / 1000000000).toFixed(1)}B`} icon={<BarChart3 className="text-purple-500" />} />
       </div>
 
+      {/* Property Valuation Analytics */}
+      <div className="bg-white p-6 rounded-lg shadow-md mb-8">
+        <h2 className="text-xl font-semibold mb-4 flex items-center">
+          <BarChart3 className="mr-2 text-blue-500" />
+          Property Valuation Analytics
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {/* Valuation Distribution */}
+          <div>
+            <h3 className="text-lg font-semibold mb-2">Valuation Distribution</h3>
+            <ResponsiveContainer width="100%" height={200}>
+              <BarChart data={[{range: '<10M', count: 5}, {range: '10M-50M', count: 12}, {range: '50M-100M', count: 7}, {range: '100M+', count: 3}]}> {/* Mock data */}
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="range" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="count" fill="#3B82F6" name="Properties" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+          {/* Valuation Trends */}
+          <div>
+            <h3 className="text-lg font-semibold mb-2">Valuation Trends</h3>
+            <ResponsiveContainer width="100%" height={200}>
+              <LineChart data={[{month: 'Jan', value: 20000000}, {month: 'Feb', value: 25000000}, {month: 'Mar', value: 22000000}, {month: 'Apr', value: 27000000}]}> {/* Mock data */}
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="month" />
+                <YAxis tickFormatter={v => `₦${(v/1000000).toFixed(1)}M`} />
+                <Tooltip formatter={v => `₦${v.toLocaleString()}`} />
+                <Legend />
+                <Line type="monotone" dataKey="value" stroke="#10B981" strokeWidth={2} name="Avg. Valuation" />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+        {/* Top/Bottom Properties */}
+        <div className="mt-8">
+          <h3 className="text-lg font-semibold mb-2">Top & Bottom Properties by Valuation</h3>
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-sm">
+              <thead>
+                <tr>
+                  <th className="px-2 py-1 text-left">Property ID</th>
+                  <th className="px-2 py-1 text-left">Owner</th>
+                  <th className="px-2 py-1 text-left">Valuation (₦)</th>
+                </tr>
+              </thead>
+              <tbody>
+                {/* Mock data */}
+                <tr><td className="px-2 py-1">JN-12345</td><td className="px-2 py-1">John Adamu</td><td className="px-2 py-1">25,000,000</td></tr>
+                <tr><td className="px-2 py-1">JS-54321</td><td className="px-2 py-1">Jane Musa</td><td className="px-2 py-1">120,000,000</td></tr>
+                <tr><td className="px-2 py-1">MG-67890</td><td className="px-2 py-1">Ali Bello</td><td className="px-2 py-1">8,000,000</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
       {/* Main Content */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Map and Property Details */}

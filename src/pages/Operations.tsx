@@ -27,6 +27,7 @@ import {
   PieChart as PieChartIcon,
   Activity,
   Laptop,
+  Home,
 } from "lucide-react";
 import { ValidationStatus } from "../types";
 
@@ -239,6 +240,40 @@ const OperationalEfficiency = () => {
           value={mockData.pendingValidations}
           icon={<Clock className="w-5 h-5" />}
         />
+      </div>
+
+      {/* House Numbering Analytics */}
+      <div className="bg-white rounded-lg shadow p-4 mb-8">
+        <h2 className="text-lg font-semibold mb-4 flex items-center">
+          <Home className="w-5 h-5 mr-2 text-blue-500" />
+          House Numbering Analytics
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div>
+            <h3 className="text-md font-semibold mb-2">Numbered vs Unnumbered Properties</h3>
+            <ResponsiveContainer width="100%" height={200}>
+              <PieChart>
+                <Pie data={[{name: 'Numbered', value: 7000}, {name: 'Unnumbered', value: 3000}]} cx="50%" cy="50%" outerRadius={80} fill="#8884d8" dataKey="value" label={({name, percent}) => `${name}: ${(percent*100).toFixed(0)}%`} />
+                <Tooltip />
+                <Legend />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+          <div>
+            <h3 className="text-md font-semibold mb-2">Numbering Progress by Area</h3>
+            <ResponsiveContainer width="100%" height={200}>
+              <BarChart data={[{area: 'Jos North', numbered: 3000, unnumbered: 1000}, {area: 'Jos South', numbered: 2500, unnumbered: 800}, {area: 'Mangu', numbered: 1500, unnumbered: 700}]}> {/* Mock data */}
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="area" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="numbered" fill="#3B82F6" name="Numbered" />
+                <Bar dataKey="unnumbered" fill="#EF4444" name="Unnumbered" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
