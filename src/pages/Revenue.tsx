@@ -316,6 +316,52 @@ const Revenue = () => {
         </div>
       </div>
 
+      {/* More Demand Notice & Land Use Charge Analytics */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+        {/* Demand Notice Response Rate */}
+        <div className="bg-white rounded-lg shadow p-4 flex flex-col items-center justify-center">
+          <h3 className="text-lg font-semibold mb-2">Demand Notice Response Rate</h3>
+          <div className="text-3xl font-bold text-green-600">85%</div>
+          <div className="text-sm text-gray-500">of demand notices responded to within 30 days</div>
+        </div>
+        {/* Land Use Charge Compliance Rate */}
+        <div className="bg-white rounded-lg shadow p-4 flex flex-col items-center justify-center">
+          <h3 className="text-lg font-semibold mb-2">Land Use Charge Compliance Rate</h3>
+          <div className="text-3xl font-bold text-blue-600">78%</div>
+          <div className="text-sm text-gray-500">of charges paid on time</div>
+        </div>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+        {/* Demand Notice Aging */}
+        <div className="bg-white rounded-lg shadow p-4">
+          <h3 className="text-lg font-semibold mb-2">Demand Notice Aging</h3>
+          <ResponsiveContainer width="100%" height={200}>
+            <BarChart data={[{age: '0-30 days', count: 60}, {age: '31-60 days', count: 25}, {age: '61+ days', count: 15}]}> {/* Mock data */}
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="age" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="count" fill="#EF4444" name="Notices" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+        {/* Land Use Charge by Property Type */}
+        <div className="bg-white rounded-lg shadow p-4">
+          <h3 className="text-lg font-semibold mb-2">Land Use Charge by Property Type</h3>
+          <ResponsiveContainer width="100%" height={200}>
+            <BarChart data={[{type: 'Residential', charge: 120000}, {type: 'Commercial', charge: 90000}, {type: 'Industrial', charge: 50000}, {type: 'Agricultural', charge: 20000}]}> {/* Mock data */}
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="type" />
+              <YAxis tickFormatter={v => `₦${(v/1000).toFixed(0)}K`} />
+              <Tooltip formatter={v => `₦${v.toLocaleString()}`} />
+              <Legend />
+              <Bar dataKey="charge" fill="#6366F1" name="Charge" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
         {/* Revenue by Month Trend */}
         <div className="bg-white rounded-lg shadow p-4">

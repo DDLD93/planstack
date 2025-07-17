@@ -276,6 +276,43 @@ const OperationalEfficiency = () => {
         </div>
       </div>
 
+      {/* More House Numbering Analytics */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+        {/* House Numbering Completion Rate */}
+        <div className="bg-white rounded-lg shadow p-4 flex flex-col items-center justify-center">
+          <h3 className="text-lg font-semibold mb-2">House Numbering Completion Rate</h3>
+          <div className="text-3xl font-bold text-green-600">70%</div>
+          <div className="text-sm text-gray-500">of properties have been numbered</div>
+        </div>
+        {/* House Numbering by Enumerator */}
+        <div className="bg-white rounded-lg shadow p-4">
+          <h3 className="text-lg font-semibold mb-2">House Numbering by Enumerator</h3>
+          <ResponsiveContainer width="100%" height={200}>
+            <BarChart data={[{name: 'Enumerator A', count: 2000}, {name: 'Enumerator B', count: 1500}, {name: 'Enumerator C', count: 1000}]}> {/* Mock data */}
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="count" fill="#3B82F6" name="Numbered" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+      <div className="bg-white rounded-lg shadow p-4 mb-8">
+        <h3 className="text-lg font-semibold mb-2">House Numbering Over Time</h3>
+        <ResponsiveContainer width="100%" height={200}>
+          <LineChart data={[{month: 'Jan', numbered: 1000}, {month: 'Feb', numbered: 2000}, {month: 'Mar', numbered: 3000}, {month: 'Apr', numbered: 4000}]}> {/* Mock data */}
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="month" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Line type="monotone" dataKey="numbered" stroke="#10B981" strokeWidth={2} name="Numbered" />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
         {/* Enumeration by Month */}
         <div className="bg-white rounded-lg shadow p-4">

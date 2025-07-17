@@ -391,6 +391,53 @@ const Dashboard = () => {
         </div>
       </div>
 
+      {/* More Property Valuation Analytics */}
+      <div className="bg-white p-6 rounded-lg shadow-md mb-8">
+        <h2 className="text-xl font-semibold mb-4 flex items-center">
+          <PieChartIcon className="mr-2 text-pink-500" />
+          Valuation by Property Type
+        </h2>
+        <ResponsiveContainer width="100%" height={250}>
+          <PieChart>
+            <Pie data={[{name: 'Residential', value: 120000000}, {name: 'Commercial', value: 80000000}, {name: 'Industrial', value: 40000000}, {name: 'Agricultural', value: 20000000}]} cx="50%" cy="50%" outerRadius={80} fill="#8884d8" dataKey="value" label={({name, percent}) => `${name}: ${(percent*100).toFixed(0)}%`} />
+            <Tooltip formatter={v => `₦${v.toLocaleString()}`} />
+            <Legend />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
+      <div className="bg-white p-6 rounded-lg shadow-md mb-8">
+        <h2 className="text-xl font-semibold mb-4 flex items-center">
+          <BarChart3 className="mr-2 text-orange-500" />
+          Valuation by Region
+        </h2>
+        <ResponsiveContainer width="100%" height={250}>
+          <BarChart data={[{region: 'Jos North', value: 50000000}, {region: 'Jos South', value: 40000000}, {region: 'Mangu', value: 30000000}, {region: 'Barkin Ladi', value: 20000000}]}> {/* Mock data */}
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="region" />
+            <YAxis tickFormatter={v => `₦${(v/1000000).toFixed(1)}M`} />
+            <Tooltip formatter={v => `₦${v.toLocaleString()}`} />
+            <Legend />
+            <Bar dataKey="value" fill="#F59E0B" name="Valuation" />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+      <div className="bg-white p-6 rounded-lg shadow-md mb-8">
+        <h2 className="text-xl font-semibold mb-4 flex items-center">
+          <Line className="mr-2 text-green-500" />
+          Valuation Growth Rate
+        </h2>
+        <ResponsiveContainer width="100%" height={200}>
+          <LineChart data={[{month: 'Jan', growth: 2.5}, {month: 'Feb', growth: 3.1}, {month: 'Mar', growth: 2.8}, {month: 'Apr', growth: 3.5}]}> {/* Mock data */}
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="month" />
+            <YAxis tickFormatter={v => `${v}%`} />
+            <Tooltip formatter={v => `${v}%`} />
+            <Legend />
+            <Line type="monotone" dataKey="growth" stroke="#10B981" strokeWidth={2} name="Growth Rate" />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+
       {/* Main Content */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Map and Property Details */}
