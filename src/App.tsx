@@ -11,6 +11,7 @@ import Users from './pages/Users';
 import Revenue from './pages/Revenue';
 import RegionalData from './pages/RegionalData';
 import OperationalEfficiency from './pages/Operations';
+import DemandNotice from "./pages/DemandNotice";
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated } = useAuthStore();
@@ -37,6 +38,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         
+        
         <Route path="/" element={
           <ProtectedRoute>
             <Layout />
@@ -49,6 +51,7 @@ function App() {
           <Route path="users" element={<Users />} />
           <Route path="revenue" element={<Revenue />} />
           <Route path="regional-data" element={<RegionalData />} />
+          <Route path="demand-notice" element={<DemandNotice />} />
           <Route path="operational-efficiency" element={<OperationalEfficiency />} />
         </Route>
       </Routes>

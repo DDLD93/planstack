@@ -11,7 +11,8 @@ import {
   Search,
   User,
   Network,
-  UserCog
+  UserCog,
+  Mail
 } from 'lucide-react';
 import { Logo } from '../assets';
 import { ImMeter } from 'react-icons/im';
@@ -36,6 +37,7 @@ const Layout: React.FC = () => {
     { icon: <Users size={20} />, label: 'Properties', path: '/properties' },
     { icon: <ImMeter size={20} />, label: 'Demographics', path: '/demographics' },
     { icon: <BiChart size={20} />, label: 'Revenue', path: '/revenue' },
+    { icon: <Mail size={20} />, label: 'Demand Notice', path: '/demand-notice' },
     { icon: <Network size={20} />, label: 'Regional Data', path: '/regional-data' },
     { icon: <BsOpencollective size={20} />, label: 'Operational Efficiency', path: '/operational-efficiency' },
     { icon: <UserCog size={20} />, label: 'Users', path: '/users' },
